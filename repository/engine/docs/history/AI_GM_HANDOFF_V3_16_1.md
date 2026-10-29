@@ -1,0 +1,11 @@
+> Historical milestone document. Current entry point, scope and behavior: [handoff](../../AI_GM_HANDOFF.md), [architecture](../../ARCHITECTURE.md), [command map](../../COMMAND_REFERENCE.md). Older roadmap/coverage claims are not the current contract.
+
+# AI GM / Tabletop Kernel — V3.16.1 Handoff
+
+Continue from `tabletop_kernel_v3_16_1/` and `CHANGES_V3_16_1.md` (also read `AI_GM_HANDOFF_V3_16.md`). Deterministic PF1e referee engine under independent AI GM; no tactics or autonomous character decisions in calculator. Imported statblock totals authoritative, GM-only exception operations supported.
+
+V3.16.1 is a targeted wall/phase movement and interface patch. Core geometry lives in `defense.mjs`: `wallAttackGeometry`, `legalPosition`, `phasableWall`, `threatens`. Direct attacks use `attackDefenseContext` before rolls; blocked wall supplies total cover. Incorporeal subtypes pass thin normal wall tiles but not `force_wall`; attacking outward from a wall applies 50% miss chance. `ignoreWalls` is explicit and GM-only via attack `defenseContext`. `gm_set_tile` changes map tile types. Manual movement route input is in `automation-demo-template.html` and `automation-demo-ui.js`, and the engine already accepts explicit ordered `path` in normal `move`, `double_move`, and `gm_adjudicate kind:move_free` commands. No added tactical route selection algorithm.
+
+Validation: `wall_geometry_tests.mjs` and existing Node files, `test_browser_v3_16.py`, and new `test_browser_v3_16_1.py` passed. Full historical Chromium regression batch was interrupted by a timeout; do not claim it completed. `python build_demos.py` regenerates offline `index.html`; package latest release separately. Grid/corner cover geometry remains conservative and distinct from V3.16 GM-provided cover bonuses. PF incorporeal traits beyond wall movement and relevant concealment are still incomplete. Creature perception, attacking a ghost while it emerges from a wall, GM override documentation and force effect behavior are future specialized work.
+
+**Next user-requested milestone:** Fast Forward / Advance Time engine clock and mechanical event scheduler (spell and condition expiration, poison/disease frequencies, 24-hour negative-level saves); do not advance thousands of rounds or let calculator decide characters' activities. Keep rest separate from elapsed time.

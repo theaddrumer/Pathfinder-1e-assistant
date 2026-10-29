@@ -1,0 +1,45 @@
+from pathlib import Path
+from playwright.sync_api import sync_playwright
+ROOT=Path(__file__).parent
+with sync_playwright() as p:
+    browser=p.chromium.launch(headless=True, executable_path='/usr/bin/chromium',args=['--no-sandbox'])
+    page=browser.new_page(viewport={'width':1440,'height':950})
+    errors=[]
+    page.on('pageerror', lambda e:errors.append(str(e)))
+    page.set_content((ROOT/'tests.html').read_text())
+    assert 'Tabletop Kernel' in page.locator('h1').inner_text()
+    assert page.locator('#registry-panel').is_visible()
+    page.locator('#activate').click()
+    page.locator('#register-creature').click()
+    assert 'registered and available for reuse' in page.locator('#notice').inner_text(),page.locator('#notice').inner_text()
+    page.locator('#spawn-creature').click()
+    assert 'Created raider_1' in page.locator('#notice').inner_text(),page.locator('#notice').inner_text()
+    assert 'AC 18/11/17 (normal/touch/flat) · Attack +7' in page.locator('#stats').inner_text()
+    page.locator('#register-effect').click()
+    assert 'registered and available for reuse' in page.locator('#notice').inner_text(),page.locator('#notice').inner_text()
+    assert page.locator('#effect-target').input_value()=='raider_1'
+    page.locator('#apply-effect').click()
+    assert 'applied' in page.locator('#notice').inner_text()
+    assert 'AC 18/11/17 (normal/touch/flat) · Attack +5' in page.locator('#stats').inner_text(),page.locator('#stats').inner_text()
+    assert 'Perception +4' in page.locator('#stats').inner_text()
+    page.locator('#roll-skill').click()
+    assert 'Check: d20' in page.locator('#notice').inner_text(),page.locator('#notice').inner_text()
+    page.locator('#apply-effect').click()
+    assert 'refreshed' in page.locator('#notice').inner_text()
+    page.locator('#end-turn').click()
+    assert 'Marsh Raider' in page.locator('#clock').inner_text()
+    page.locator('#end-turn').click()
+    assert 'Shaken' in page.locator('#stats').inner_text()
+    page.locator('#end-turn').click()
+    page.locator('#end-turn').click()
+    assert 'Shaken' not in page.locator('#stats').inner_text()
+    assert 'Attack +7' in page.locator('#stats').inner_text()
+    # Prior fixtures still accessible.
+    page.locator('#scenario').select_option('choker')
+    assert page.locator('#registry-panel').is_hidden()
+    page.locator('#activate').click()
+    page.locator('#end-turn').click()
+    assert 'Move 2' in page.locator('#clock').inner_text()
+    assert errors==[],errors
+    print('Browser V3.7 pass: registration, spawn, Shaken, refresh, expiry, checks, legacy Choker.')
+    browser.close()

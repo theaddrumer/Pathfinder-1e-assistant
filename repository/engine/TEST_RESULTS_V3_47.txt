@@ -1,0 +1,39 @@
+V3.47 validation
+================
+
+56/56 Node regression suites passed (python3 run_regressions.py).
+The detailed engine output is retained in TEST_RESULTS_NODE_V3_47.txt.
+The new artwork suite has 8 groups covering PNG validation, atomic failures,
+GM-only commands, rendering/privacy, redactions, transforms, map saves,
+cleanup, undo, real disk restart, write failures, idempotency, private editor
+routes, stale revisions, current-only raster URLs and re-hiding.
+After optimizing redaction rendering, all 8 artwork groups passed again.
+
+Chromium browser checks passed:
+- test_browser_v3_47.py: real JPEG file import, PNG normalization, alignment,
+  pointer-drawn redactions, review checkbox, Apply, public PNG delivery,
+  exact hidden-pixel RGB/alpha checks, existing overlays above artwork,
+  stale editor rejection, reload, full reveal, re-hide and removal.
+- test_browser_v3_43.py: existing player transport, privacy, movement,
+  visibility, pan/zoom, reconnect, labels and offline GM controls.
+- test_browser_v3_46.py: map Save/List/Load/Delete, confirmation and roster
+  protection, map-preserving cleanup, object/door preservation. Rechecked
+  after rebuilding the V3.47 offline HTML.
+
+Command discovery/reference check passed: 7 groups, 70 catalog examples.
+Ubuntu launcher tests passed: 15, including fixed local artwork URL routing.
+Windows shortcut tests passed: 3.
+Python launcher files compile successfully.
+New editor screenshot inspected for readable controls and previews.
+
+Platform boundary:
+Native Windows GUI execution is unavailable in this environment. Existing
+Windows shortcut behavior was confirmed by the user on V3.46; the added
+Map artwork button routes to the same tested Windows browser-opening helper.
+The actual Windows/WSL button still needs a user-PC check after installation.
+No live Wasp Nest mutation or artwork import was used during testing.
+
+Firefox check: attempted the V3.47 browser workflow with Playwright Firefox
+135 on Linux. The test process hung without returning a result and was
+interrupted. Firefox is not counted as passing; verify in the user’s Firefox
+after installation. Chromium completed the same workflow successfully.

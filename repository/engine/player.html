@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Encounter map</title><link rel="stylesheet" href="/player.css">
+<script src="/player.js" defer></script>
+</head>
+<body>
+<header>
+ <div class="identity"><span class="eyebrow">TABLETOP · PLAYER VIEW</span><h1 id="title">Encounter map</h1></div>
+ <div class="connection"><span id="lamp"></span><span id="connection" role="status">Connecting…</span></div>
+</header>
+<main id="viewport" tabindex="0" aria-label="Encounter map. Columns start at A, rows at 1. Hover for a square coordinate, click to pin and inspect shared token HP and conditions, Escape to clear. Drag to pan. Scroll or use plus and minus to zoom. Press zero to fit.">
+ <canvas id="map" aria-label="Shared encounter map"></canvas>
+ <div id="empty">Waiting for the map…</div>
+ <div id="unavailable" hidden>Connection lost · showing the last received map</div>
+</main>
+<footer>
+ <div class="tools" aria-label="View controls">
+  <button id="zoom-out" title="Zoom out" aria-label="Zoom out">−</button><span id="zoom">100%</span><button id="zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+  <button id="fit">Fit map</button><label><input id="grid" type="checkbox" checked> Grid</label><label><input id="labels" type="checkbox" checked> Labels</label>
+ </div>
+ <div class="hint"><span id="coordinate" aria-label="Map square coordinate">Hover a square · click to pin</span><span id="dimensions">—</span></div>
+ <div id="token-vitals" role="status" aria-live="polite" aria-atomic="true">Click a player token’s square to inspect HP and conditions</div>
+</footer>
+</body></html>

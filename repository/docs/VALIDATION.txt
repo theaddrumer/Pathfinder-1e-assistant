@@ -1,0 +1,35 @@
+GitHub preparation, 2026-10-28 (America/New_York)
+Engine 3.51.0; desktop manifest 1.5.0-beta.1; packaging revision 1.
+Local verification used Node 24.22.1 and Python on Linux, with disposable saves.
+
+PASS: recovered each intact Ubuntu entry with decompression, size and CRC checks.
+PASS: both rebuilt ZIPs reopened with complete central directories and CRC checks.
+PASS: bundled dependency contents verified byte-for-byte (3,678 pinned files,
+      excluding npm's generated hidden lock metadata).
+PASS: independent clean npm ci --ignore-scripts matched every pinned dependency file.
+PASS: Ajv runtime/validation_error.js present in each release.
+PASS: Ubuntu release extracted into a temporary directory and tested there:
+      15 integration groups; 3 official SDK transport groups;
+      compatible-session preservation/restart and invalid-version rejection;
+      7 large-artwork/calibration groups; 5 player HTTP transport groups;
+      15 Ubuntu launcher tests.
+PASS: extracted desktop release discovered 7 tools via the official MCP SDK;
+      began with an empty encounter; served player/editor/control pages;
+      rejected foreign origins and an editor /mcp endpoint;
+      executed a plain roll; closed viewer listeners on disconnect;
+      persisted state across restart and replayed a request without duplicate work.
+PASS: recovered historical time-engine suite, 11 tests, against current source.
+PASS: shortcut-generation tests after replacing a developer username in test data.
+PASS: no real-looking tunnel IDs, personal settings, private app-binding file,
+      API credentials or Adventure Path image/PDF assets found in the source copy.
+      The secret-shaped test string in LauncherTests.cs is explicitly a dummy.
+      session_v347.json contains synthetic test state and a tiny synthetic image.
+
+Not performed: fresh Windows/WSL installation, actual live independent-user tunnel
+creation/connection, real Windows shortcut invocation, ChatGPT desktop installation,
+public marketplace submission, a complete new gameplay/browser regression run,
+or a legal licensing audit. Existing historical test reports are not new results.
+
+No live calculator state, installed launcher, account plugin or original Library
+package was changed by this distribution preparation. No GitHub repository was
+created and nothing was published.

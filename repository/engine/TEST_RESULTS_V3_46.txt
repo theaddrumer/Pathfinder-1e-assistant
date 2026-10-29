@@ -1,0 +1,42 @@
+V3.46 validation record
+======================
+
+Engine/browser regressions:
+  Command: python3 run_regressions.py --browser
+  55 Node suites passed.
+  44 of 45 browser suites passed on the initial run.
+  test_browser_v3_34.py initially failed because a broad .stack-count
+  selector matched both the stack number and the existing GM badge.
+  The assertion was scoped to the intended map cell and the affected
+  suite was rerun: all four scenarios passed, with no page errors.
+  Final result across full run and targeted rerun: 100/100 suites passed.
+
+New map-library coverage:
+  map_library_tests.mjs: 17 groups passed.
+  Includes object damage/destruction, geometry and visibility round trips,
+  source-linked objects, map-preserving cleanup, retained actor state,
+  pending interruption/casting guards, atomic invalid loads, persistence
+  restart, failed writes/retries, old encounter compatibility, command
+  discovery, clock/schedule preservation, and bookmark durability over undo.
+
+Browser integration:
+  test_browser_v3_46.py: Save/List/Load/Delete, cleanup preview and action,
+  confirmation cancellation, object preservation, door restoration, and
+  roster protection passed. A render overwriting command output was fixed
+  before the full regression run.
+  test_browser_v3_43.py: player transport, hidden data privacy, visibility,
+  pan/zoom, reconnect, fog, and offline GM controls passed.
+
+Ubuntu launcher:
+  python3 launcher/test_ubuntu_launcher.py: 14 tests passed.
+  python3 launcher/test_windows_shortcuts.py: 3 tests passed.
+  Covers safe argument encoding, shortcut success/failure/timeout handling,
+  stable targets across releases, actual Linux bootstrap execution, and
+  rejecting launcher paths outside the installed releases directory.
+
+Limits:
+  Native Windows COM shortcut execution is not available in this test
+  environment and needs verification on Windows/WSL. The unchanged Tk GUI
+  retains its earlier V3.45 validation; it was not newly tested here.
+  No live Wasp Nest mutation, reveal, cleanup, or map replacement was used.
+  Historical TEST_RESULTS files are retained for their respective versions.

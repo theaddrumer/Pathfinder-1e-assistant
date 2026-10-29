@@ -1,0 +1,48 @@
+V3.45 Ubuntu / WSLg launcher validation — 2026-10-22
+
+PASS: 14 Linux integration/validation tests (5.092 seconds).
+Real Node calculator + MCP initialization/status + player HTTP used with disposable saves.
+- Existing save retained across reconnect and Stop/Start; native lock released.
+- 401 recovery keeps calculator alive; secret redacted from diagnostics.
+- Secret enters only tunnel environment, not arguments/settings/calculator environment.
+- Occupied calculator/player ports reject without killing unrelated processes.
+- Malformed save and duplicate writer preserve existing state/owner.
+- Unexpected calculator exit cleans up its owned tunnel.
+- Parent-death guard terminates child if launcher parent dies.
+- One GUI owner via flock; atomic 0600 settings; no persisted secret.
+- Installation/upgrade preserves save and migrates only non-secret settings.
+- Wrong program/key forms reject; real Linux runtime validation succeeds.
+- Checksum failures discard download; log floods preserve GUI completion events.
+
+PASS: 3 real Tk GUI test groups under Xvfb.
+- Masked secret, layout bounds, settings save, refusal to replace existing save with empty data.
+- Failed login, reconnect, Stop/Start and close with real disposable calculator processes.
+- Close during background startup waits and cleans up both processes.
+Screenshot visually inspected: fields, tabs, status and action buttons visible.
+
+The tests found and fixed TIME_WAIT false-positive port conflicts and Linux
+parent-death ownership tied to short-lived GUI worker threads. A persistent
+process-creation thread now owns children; GUI lifecycle tests exercise this.
+
+UNCHANGED: every pre-existing engine, MCP, player and test source file matches
+V3.44. Only README.md, START_HERE_WINDOWS.txt and launcher/README.md changed
+among retained old files. New Ubuntu launcher/install/tests/docs were added.
+Old Windows executable/config/runtime binaries omitted from this package.
+Engine/package version stays 3.43.0.
+
+NOT VERIFIED HERE: Windows WSLg rendering, Start-menu indexing/taskbar pinning,
+Windows default-browser handoff, Windows settings-path discovery, and a live
+authenticated OpenAI connection made by this new GUI. Requires local Windows
+acceptance. Manual Ubuntu runtime + Firefox map + live kernel_status WERE
+verified in the user session before this release. No live encounter was changed
+by these release tests. The tunnel fixture uses synthetic secrets and no network.
+
+Actual GUI test output:
+test_close_during_start_completes_shutdown (__main__.GuiTests.test_close_during_start_completes_shutdown) ... ok
+test_failed_key_reconnect_stop_restart (__main__.GuiTests.test_failed_key_reconnect_stop_restart) ... ok
+test_fields_mask_save_and_new_encounter_guard (__main__.GuiTests.test_fields_mask_save_and_new_encounter_guard) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 3.135s
+
+OK

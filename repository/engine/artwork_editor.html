@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Map artwork · GM</title><link rel="stylesheet" href="/artwork.css"><script src="/artwork.js" defer></script></head>
+<body><header><span>PATHFINDER ASSISTANT · LOCAL GM</span><h1>Map artwork</h1><p id="scene">Connecting…</p></header>
+<main><aside>
+ <label class="file">Choose image<input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label>
+ <p>PNG, JPEG or WebP, up to 25 MiB. Original resolution is retained within the 8192-pixel side, 16-megapixel and 16-MiB normalized PNG limits. Changes stay in this preview until you apply them.</p>
+ <label class="check"><input id="resize-import" type="checkbox"> Allow resizing if the selected image exceeds limits</label>
+ <fieldset><legend>Calibrate from two grid intersections</legend>
+ <p>Pick two printed intersections several squares apart. Enter their matching calculator coordinates: the top-left corner of A1 is (0, 0). One printed 10-ft square spans two calculator cells. Check a third point afterward.</p>
+ <div class="fields">
+ <label>A: source X<input id="a-sx" type="number" min="0" value="0"></label><label>A: source Y<input id="a-sy" type="number" min="0" value="0"></label>
+ <label>A: grid X<input id="a-gx" type="number" step="0.5" value="0"></label><label>A: grid Y<input id="a-gy" type="number" step="0.5" value="0"></label>
+ </div><button id="pick-a" type="button">Pick A on source</button>
+ <div class="fields">
+ <label>B: source X<input id="b-sx" type="number" min="0" value="100"></label><label>B: source Y<input id="b-sy" type="number" min="0" value="0"></label>
+ <label>B: grid X<input id="b-gx" type="number" step="0.5" value="5"></label><label>B: grid Y<input id="b-gy" type="number" step="0.5" value="0"></label>
+ </div><button id="pick-b" type="button">Pick B on source</button> <button id="calibrate" type="button">Calibrate preview</button>
+ </fieldset>
+ <fieldset><legend>Fine-tune alignment</legend>
+ <div class="fields"><label>Left (squares)<input id="x" type="number" step="0.05" value="0"></label><label>Top (squares)<input id="y" type="number" step="0.05" value="0"></label>
+ <label>Width (squares)<input id="width" type="number" step="0.05" min="0.01" value="30"></label><label>Height (squares)<input id="height" type="number" step="0.05" min="0.01" value="40"></label>
+ <label>Rotation (degrees)<input id="rotation" type="number" step="0.1" min="-180" max="180" value="0"></label></div>
+ <button id="fit" type="button">Fit whole image inside map</button>
+ <p>Offsets start at the map’s top-left. Rotation is clockwise around the image’s top-left. The grid and mechanical walls do not move.</p></fieldset>
+ <fieldset><legend>Cover printed secrets</legend>
+ <label class="check"><input id="redact" type="checkbox"> Drag on the source image to cover a label</label>
+ <label>Cover color<input id="color" type="color" value="#283640"></label>
+ <p id="redactions">0 covers</p><button id="undo-cover" type="button">Remove last cover</button>
+ <p>Covers are baked into the player image before it is sent. Artwork beneath them stays private. Choose a player-safe map when possible.</p></fieldset>
+ <label class="check"><input id="reviewed" type="checkbox"> I checked the image for printed secrets.</label>
+ <div class="buttons"><button id="apply" type="button">Apply artwork</button><button id="remove" type="button">Remove background</button><button id="reload" type="button">Reload current map</button></div>
+ <p id="status" role="status">Loading current map…</p>
+ <p>Only the background changes here. Reveal squares and show tokens through the GM assistant. Save a named map after applying artwork if you want that bookmark to include it.</p>
+</aside><section>
+ <h2>Alignment preview <small>GM only · fog is not shown</small></h2><div class="canvas-wrap"><canvas id="preview"></canvas></div>
+ <h2>Source image <small>Drag here to cover secrets</small></h2><div class="canvas-wrap"><canvas id="source"></canvas></div>
+</section></main></body></html>

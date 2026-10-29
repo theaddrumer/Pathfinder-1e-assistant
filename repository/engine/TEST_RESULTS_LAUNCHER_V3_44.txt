@@ -1,0 +1,44 @@
+TABLETOP KERNEL WINDOWS LAUNCHER — V3.44 DISTRIBUTION
+
+Build: Launcher 1.0.0.0; unchanged engine 3.43.0; bundled Node 24.22.0 Windows x64.
+Validation host: Linux, Mono C# compiler/runtime 6.8.0.105, Xvfb.
+
+PASS: Compiled Tabletop Launcher.exe as a PE32+ x86-64 Windows GUI .NET assembly.
+PASS: Official Node Windows ZIP SHA-256 matches the official release checksum.
+
+PASS: 23 C# launcher checks
+  Valid setup; API-key/tunnel-ID field mix-ups; whitespace key; relative save path;
+  organization validation; Windows argv quoting; exact/other-key/bearer redaction;
+  bounded log lines; engine credential isolation; inherited runtime-option cleanup;
+  hidden direct process startup flags; tunnel credential environment vs argv;
+  stale tunnel-config cleanup; MCP route/health-port configuration; occupied-port
+  detection with owner preservation; no session-only credential written to settings;
+  atomic settings replacement; temporary-settings cleanup.
+
+PASS: 5 real launcher-host lifecycle groups (Node + official MCP SDK)
+  Live server/player view, accepted map mutation, persistence across stop/restart.
+  Parent stdin EOF closes listeners/lock and preserves the saved encounter.
+  Duplicate writer rejected while the original writer remains active.
+  Occupied player port rolls back startup and releases the owned session lock.
+  Stale crash lock recovers; malformed existing save is rejected without overwrite.
+
+PASS: 15 existing AI/MCP integration groups.
+PASS: 4 existing player-transport/privacy groups.
+
+PASS: WinForms UI smoke checks under Mono/Xvfb
+  Correct initial Start/Stop/map availability; API-key masking and Show/Hide;
+  three tabs selectable; idle window closes. Native X11 screen capture inspected:
+  visible, usable connection form with unclipped controls. Mono DrawToBitmap was
+  unsuitable for screenshot capture; a real display capture was used instead.
+
+NOT RUN: Native Windows 10/11 execution, Windows DPAPI round-trip and job-object
+assignment/kill-on-close, real authenticated OpenAI tunnel, Firefox launched by
+Windows shell, Windows high-DPI rendering, SmartScreen/signing checks. The C# test
+source includes additional DPAPI checks that run only on Windows.
+
+The full engine suite was not repeated: runtime mechanics and engine files are
+unchanged from V3.43, whose TEST_RESULTS_V3_43.txt records 53 passing Node suites.
+Targeted integration/transport suites were rerun for this distribution.
+
+All tests used disposable synthetic data. No user encounter, API key, account,
+or live Tabletop Kernel tool connection was accessed or modified.

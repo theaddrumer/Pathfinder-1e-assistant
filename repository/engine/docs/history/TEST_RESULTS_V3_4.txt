@@ -1,0 +1,20 @@
+V3.4 final regression verification — October 13, 2026
+
+Node automated test suites:
+- tests.mjs: 16 named passing, plus original authorization assertion
+- vocabulary_probe_tests.mjs: 8 passing
+- automation_tests.mjs: 17 passing
+- action_economy_tests.mjs: 21 passing
+- aoo_ui_regression_tests.mjs: 7 passing
+- choker_movement_regression_tests.mjs: 3 passing
+- full_attack_tests.mjs: 15 passing
+- registry_tests.mjs: 14 passing
+
+TOTAL: 101 named automated tests passing, plus original authorization assertion.
+
+Browser smoke tests using headless Chromium:
+- test_browser_v3_2.py: passes AoO pause/resume and 5-foot-step restriction
+- test_browser_v3_3.py: passes full attack and Quickness interaction
+- test_browser_v3_4.py: passes register/spawn, Shaken apply/refresh/expiry, checks, and Choker fixture; zero JS errors.
+
+Sample fixture is fictional. No externally retrieved AoN/PF monster has been verified in this milestone.

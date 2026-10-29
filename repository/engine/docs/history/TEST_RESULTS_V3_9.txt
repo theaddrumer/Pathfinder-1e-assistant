@@ -1,0 +1,290 @@
+=== ability_loss_tests.mjs ===
+PASS Ability damage accumulates; penalty advances only per two points
+PASS Drain lowers actual score and follows modifier breakpoints
+PASS Damage, drain, and timed modifier occupy separate tracks
+PASS Con damage and drain adjust current/max HP when HD known, preserving injuries
+PASS Constitution effects also refresh HP when applied and removed
+PASS Con damage without HD returns explicit warning instead of guessing HP
+PASS Ailments can deal drain while their cure does not restore it
+PASS Damage plus drain from one ailment remain independent
+PASS Temporary ability penalty alone cannot reduce an ability below 1
+PASS Zero ability score and lethal ability damage are flagged
+PASS Direct ability mutations reject actor role and rollback on bad commands
+PASS Undo and save/reload preserve separate reservoirs and HP adjustment
+PASS Ailment validator rejects malformed drain fields
+Total V3.6.1 ability loss tests: 13
+=== action_economy_tests.mjs ===
+PASS normal action pool: one standard, one move, one swift
+PASS a standard can substitute for a second move, never the reverse
+PASS third normal movement denied transactionally
+PASS normal move followed by attack consumes the separate standard
+PASS five-foot step uses no move action, but disallows other actual movement
+PASS ordinary movement precludes later five-foot step
+PASS full-round action costs standard and move, but leaves swift and step available
+PASS invalid attack does not consume standard and does not advance the RNG
+PASS AoO reactions do not consume active actor standard action
+PASS AI actor role can take actions, but cannot use GM-only effects or action grants
+PASS omitted role defaults to restricted actor, not administrator
+PASS GM-only override attacks do not spend creature actions
+PASS GM direct damage cannot be used by a player; explicit admin damage remains action-free
+PASS player cannot decide an enemy interrupt or manipulate grants
+PASS Choker Quickness is declarative, grants 1 extra move on turn start
+PASS Choker third actual movement is legal; fourth is rejected
+PASS Choker can full-round act and still spend bonus move action
+PASS Choker gets only one extra move each turn, including later rounds
+PASS undo turn restores Choker Quickness pool and GM-grant source audit
+PASS failed grant command leaves action pool and activity unchanged
+PASS registered action grant validates types and does not allow fake commands
+
+21 action economy tests passed
+=== aoo_ui_regression_tests.mjs ===
+PASS published PF1e Choker: 10-foot reach, 20-foot move speed
+PASS entering Choker 10-foot threat from outside produces no AoO
+PASS leaving Choker 10-foot threatened square to approach adjacent provokes BEFORE entry
+PASS entering a 5-foot-only threat does not provoke even when the actor ends adjacent
+PASS leaving a 5-foot threat provokes even when moving farther away
+PASS five-foot step never provokes when leaving Choker natural reach
+PASS Choker can move towards Explorer and make a real standard attack
+
+7 AoO / UI-activity regression tests passed
+=== attack_foundation_tests.mjs ===
+PASS a single natural attack does not gain manufactured BAB iterative strikes
+PASS standard attack uses the selected imported attack slot, including its named rider
+PASS natural bite defaults to one simultaneous B/P/S damage roll
+PASS natural claw and sting have the Bestiary default damage types
+PASS multi-typed bite still triggers Black Pudding Split from piercing/slashing
+PASS grab is defined independently of bite, including +4, -20 and optional action
+PASS multi-type bite bypasses either DR/slashing or DR/piercing
+PASS mixed damage types do not create multiple damage rolls or multiple DR reductions
+PASS imported creature attack descriptors survive registration, instantiation and readback
+PASS weapon profiles can independently declare simultaneous B/P damage
+PASS multi-type packet component uses one amount and may bypass slash-based DR
+PASS separate fire component is not merged with bite physical DR or rolled three times
+PASS malformed imported attack records and unknown riders fail atomically
+PASS ranged attack profile imports but cannot execute until range and cover support exists
+PASS attack rider does not automatically grapple or deal Constrict damage
+15 attack foundation tests passed
+=== automation_tests.mjs ===
+PASS entering an aura automatically rolls once and changes derived stats
+PASS remaining in aura does not repeatedly request saving throws
+PASS successful aura save creates 24-hour immunity marker for this source
+PASS an affected creature hitting its own archon ends penalty and marks immunity
+PASS automatic split cancels slashing damage and places a second pudding
+PASS pudding takes normal fire damage
+PASS pudding at 10 or less HP cannot split
+PASS Vienna aura automatically makes Fort save and teleports to legal square
+PASS Undo round restores aura exposure history, effects, and coordinates
+PASS rejected automation is atomic across HP, rule state and RNG
+PASS unknown operation is blocked when registering a rule
+PASS optional rule can pause and be explicitly accepted or declined
+PASS mid-damage optional interrupt is rejected until a resumable scheduler exists
+PASS failed automatic split rolls back all earlier mutations and RNG
+PASS non-weapon slashing effect does not cause black pudding split
+PASS automation engine includes rule state in turn rollback
+PASS a terrain hazard subscribes to tile-enter and deals automatic damage
+
+17 integrated automation tests passed
+=== charge_and_double_move_tests.mjs ===
+PASS explicit standard-action move retains available move action
+PASS normal move and standard-action move work in either order
+PASS double movement covers two speed budgets and consumes two move actions
+PASS too-long double move fails transactionally
+PASS mixed diagonal and orthogonal path has correct 5/10 cost
+PASS charge moves to closest legal reach square and makes one +2 attack
+PASS charge chooses closest position for reach-10 attacker without approaching adjacent
+PASS charge penalizes normal, touch and flat-footed AC
+PASS charge AC penalty persists through opponent turn, expires at start of next own turn
+PASS charge attack waits for AoO decision and resolves once
+PASS taking AoO during charge works in automatic-rule subclass
+PASS charge refuses 5ft too-close target even if farther landing possible
+PASS charge refuses wall-blocked closest attacking square
+PASS charge refuses any difficult square in charging line
+PASS charge refuses five foot step first or ordinary move first
+PASS ordinary actor may charge but cannot supply nonstandard attack defense
+PASS charge and double move prevent further standard attacks, without removing swift
+PASS charge into occupied or wall route fails, no RNG/action cost
+PASS charge AC penalty and movement restore on undo
+PASS printed AC totals receive charge penalty, without rewriting their baseline
+PASS charging gives one attack even when an explicit full-attack routine has two
+PASS Choker Quickness extra move remains after charge with its full-round resources consumed
+
+22 charge/double-movement tests passed
+=== choker_movement_regression_tests.mjs ===
+PASS Choker movement provokes an Explorer AoO after Explorer approaches and attacks
+PASS Explorer may take AoO and Choker movement continues if Choker survives
+PASS Choker extra move does not override the five-foot-step restriction
+=== condition_ailment_tests.mjs ===
+PASS 34 condition definitions and statuses
+PASS shaken penalty affects attack, saves and skills
+PASS condition refresh does not stack
+PASS fear escalation suppresses weaker instead of doubling
+PASS frightened proximity advisory does not reject legal move
+PASS dazed blocks creature actions without blocking GM override
+PASS fatigued escalates to exhausted rather than stacking penalties
+PASS prone contextual AC only during melee attack
+PASS flat-footed attack defense uses published value
+PASS standard conditions expire on target turns
+PASS unauthorized GM commands reject actor
+PASS initial saved exposure avoids ailment
+PASS failed exposure deals ability damage, not a changed base score
+PASS two consecutive successful saves cure, failures reset streak
+PASS nonconsecutive cure succeeds across failures
+PASS limited poison expires after maxTicks, no recurring saves
+PASS disease onset and day frequency
+PASS HP DOT auto-ticks without save and expires
+PASS strict validator rejects injected code / unknown effects
+PASS GM can heal ability damage without curing poison
+PASS registered ailments persist undo; applications roll back
+PASS multiple concurrent independent target instances
+PASS status action restrictions block second staggered major action
+PASS nauseated allows one move but not standard or a second move
+PASS stunned suppresses attacks of opportunity
+PASS condition effects survive save/load with distinct instance state
+PASS condition removal does not erase unrelated modifiers
+PASS con ability damage affects Fortitude but does not rewrite the printed score
+PASS invalid ailment registration is transactional
+PASS onset-delayed damage fires at scheduled time not before
+PASS turn-start ailment tick contributes to checkpoint so undo does not erase it
+Total V3.6 condition/ailment tests: 31
+=== effect_packet_tests.mjs ===
+PASS complete vocabulary lists baseline and named exceptional damage classes, excluding magic/epic properties
+PASS all named categories can be entered through ordinary GM damage commands
+PASS flame strike style packet splits fire from resistance-ignoring divine portion
+PASS hellfire ray style unholy portion damages devil by default
+PASS environment hellfire target-sensitive components are per effect, not universal
+PASS inherited Devil fire immunity and alignment-specific hellfire exception apply separately
+PASS alignment subtype weapon property bypasses DR but does not add damage
+PASS Devil natural and wielded weapons inherit both lawful and evil DR bypass
+PASS DR applies once to physical total in one packet, not each component
+PASS different component immunities and resistance use one atomic packet
+PASS unholy holy and the four alignment-named damage labels are not universally resisted based on alignment
+PASS enhancement values bypass DR but leave magic and Epic separate from damage type
+PASS incorporeal recognized +1 weapon automatically counts as magic
+PASS ambiguous subtype/actual alignment mismatches fail loudly, without HP mutation
+PASS invalid component and unknown metadata are atomic
+PASS GM packet permission gate is separate from actor action economy
+PASS dice components roll inside one validated and seed-replayable packet
+PASS default alignment multiplier expresses neutrality without hardcoded alignment damage rules
+18 V3.8 effect packet tests passed
+PASS ordinary attack inherits subtype-based alignment bypass
+=== foundation_tests.mjs ===
+PASS devil inherits fire immunity and acid/cold resistance with no double application
+PASS subtype suppression explicitly overrides fire immunity
+PASS demon and devil resistances do not add together
+PASS incorporeal blocks mundane weapons, halves magical and takes full force and ghost touch
+PASS DR sources do not stack; evaluate bypass for each before choosing highest
+PASS effect descriptors let subtype immunity operate before condition logic
+PASS undead poison/disease ailment blocked before rolling any exposure save
+PASS undead physical ability damage immune, mental ability damage not automatically immune
+PASS HD formula and Charisma drain recalculate DC
+PASS spell/class/BAB/racial/fixed DC formulas handle alternate scale
+PASS undead substitutes CHA for CON-based DC while construct uses +0
+PASS invalid definitions rejected and not retained
+PASS only GM may resolve raw damage and calculations without action costs
+PASS persistent defenses save, restore and preserve source trace
+PASS mindless ooze default immunity can be overridden by an intelligent ooze
+PASS construct Fortitude-save immunity preserves harmless/object exceptions
+PASS ordinary attack resolution forwards authored magical-weapon metadata to defenses
+17 V3.7 foundational tests passed
+=== full_attack_tests.mjs ===
+PASS Choker has two equal-bonus primary tentacles and correct damage profile
+PASS full attack rolls separately and consumes standard plus regular move
+PASS full attack is incomplete until all strikes resolved or explicitly forfeited
+PASS Choker may spend bonus move before and after full attack, as appropriate
+PASS ordinary move before full attack makes full-round action unavailable without special grant
+PASS five-foot step between natural attacks is legal and does not provoke
+PASS target for second natural attack can be different after observing first
+PASS invalid pending attack cannot consume a strike or die roll
+PASS a full attack cannot be initiated a second time with a pending sequence
+PASS BAB iterative attacks generated at successively lower bonuses
+PASS single standard attack still only rolls once even with 2 natural weapons
+PASS actor cannot use GM override while their full attack remains unresolved
+PASS undo current turn restores unused Choker full attack and Quickness grant
+PASS full attack followed by Quickness movement still pauses for Explorer AoO
+PASS five-foot step before full attack preserves the full-round action
+
+15 full-attack tests passed
+=== registry_tests.mjs ===
+PASS GM registers and reuses creature definitions without affecting creature instances
+PASS Rejected registrations, illegal positions, and duplicate instances are atomic
+PASS Only GM can register, spawn, or inject effects; viewing the state is safe
+PASS Shaken applies −2 to attack, saves, skill and ability checks without changing ability scores
+PASS Skill and ability checks have no automatic natural-1 failure or natural-20 success
+PASS Re-applying a condition refreshes instead of double-counting penalties
+PASS Effects expire at end of the affected creature turn and stats return to baseline
+PASS Imported printed totals and ability dependencies respond to ability penalties
+PASS A declaration may attach a reusable declarative Quickness rule to each spawned instance
+PASS Undo removes dynamically spawned creatures AND their automation subscriptions
+PASS Exported state reloads as a working reusable catalog
+PASS Creature definitions survive undoing a subsequent combat action
+PASS Unknown effect stats are rejected; original stats never change
+PASS Authoritative printable attack and AC participate in engine attacks
+14 runtime-registry tests passed
+=== stat_vocabulary_v3_5_tests.mjs ===
+PASS Printed AC variants remain separate and visible in controller inspection
+PASS Cannot import a printed AC without touch and flat-footed totals
+PASS Dexterity changes propagate only through declared printed-total links
+PASS Max Dex cap is respected for imported AC links
+PASS Damage-roll style targeting of touch AC requires GM authority
+PASS GM cannot target an invented defensive statistic
+PASS Generic modifier can affect all three AC variants together
+PASS Skill snapshots inherit ability deltas, group penalties and skill-specific modifiers
+PASS Unspecified unusual skill dependency may be explicitly overridden
+PASS Ad hoc 1d6 falling damage and healing obey HP bounds
+PASS GM dice-only rolls consume seeded RNG without affecting hit points
+PASS Creature controller cannot manufacture free damage, healing or modifiers
+PASS Bad GM roll and modifier reject atomically without consuming test die
+PASS Modified creature state survives save/reload and undo restores baseline
+14 V3.5 statistic/adjudication tests passed
+=== tests.mjs ===
+PASS ability modifier floors odd negative score
+PASS highest typed bonus, all dodge, untyped different sources
+PASS typed penalties take worst; untyped penalties stack
+PASS Strength enhancement cascades to attack, damage, CMB
+PASS Aura -2 to attack, AC, all saves and remove on hit source
+PASS Medium creature entering reach does not provoke
+PASS Leaving threatened square interrupts BEFORE movement
+PASS 5-foot step does not provoke even from threatened square
+PASS No 5-ft step after normal move
+PASS Large creature cannot move into occupied small creature
+PASS Damage and check outcomes reproducible after undo
+PASS AoO can reduce mover to zero before entering next square
+PASS Consecutive squares threatened generate a single move opportunity per foe
+PASS Round rewind restores positions, HP, effects, and seed
+PASS A completed turn can be rewound at start of next actor turn
+PASS Illegal effect operations are rejected
+
+16 passing tests
+PASS: invalid commands are atomic and role-gated
+=== vocabulary_probe_tests.mjs ===
+PASS Aura rule adds modifiers as DATA, no aura-specific engine routine
+PASS Aura ends on specifically affected creature hitting its own archon
+PASS Other failed save does not trigger the aura
+PASS Pudding: slashing cancels damage and clones at half original HP
+PASS Pudding: unlisted damage type does not split
+PASS Pudding: at or below 10 HP does not split
+PASS Contingent action offers an interrupt once, and may be declined
+PASS Invalid operation leaves no partially changed state
+8 passing vocabulary-probe tests
+=== test_browser_v3_2.py ===
+BROWSER PASS Explorer approaches, Choker AoO, attacks, Choker move pauses for Explorer AoO, movement resumes, second move works
+BROWSER PASS Five-foot step prevents later movement and gives an explanatory error
+BROWSER PASS no JavaScript runtime errors
+=== test_browser_v3_3.py ===
+Browser V3.3 pass: Choker 2 strikes, interleaved step, Quickness move after full attack, no JS errors.
+=== test_browser_v3_4.py ===
+Browser V3.4 pass: registration, spawn, Shaken, refresh, expiry, checks, legacy Choker.
+=== test_browser_v3_5.py ===
+Browser V3.5 PASS: workbench, AC variants, damage/healing, modifiers, touch attack, Choker gallery.
+=== test_browser_v3_5_1.py ===
+Browser V3.5.1 PASS: charge attack, AC duration, standard-action move, double move.
+=== test_browser_v3_6.py ===
+Browser V3.6 PASS: conditions, modifiers, ailment exposure, saves, cure, persistent damage.
+=== test_browser_v3_6_1.py ===
+Browser V3.6.1 PASS: damage, drain, healing/restoration, ailment ability drain, stat recalculation.
+=== test_browser_v3_7.py ===
+Browser V3.7 PASS: register/spawn Devil; fire immunity, acid resistance, DC, poison descriptor.
+=== test_browser_v3_8.py ===
+Browser V3.8 PASS: dynamic vocabulary, ordinary unholy, environmental Hellfire and divine split.
+=== test_browser_v3_9.py ===
+Browser V3.9 PASS: imported bite attack + Grab are inspectable and clearly marked partial.

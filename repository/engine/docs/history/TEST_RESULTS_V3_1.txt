@@ -1,0 +1,88 @@
+PASS ability modifier floors odd negative score
+PASS highest typed bonus, all dodge, untyped different sources
+PASS typed penalties take worst; untyped penalties stack
+PASS Strength enhancement cascades to attack, damage, CMB
+PASS Aura -2 to attack, AC, all saves and remove on hit source
+PASS Medium creature entering reach does not provoke
+PASS Leaving threatened square interrupts BEFORE movement
+PASS 5-foot step does not provoke even from threatened square
+PASS No 5-ft step after normal move
+PASS Large creature cannot move into occupied small creature
+PASS Damage and check outcomes reproducible after undo
+PASS AoO can reduce mover to zero before entering next square
+PASS Consecutive squares threatened generate a single move opportunity per foe
+PASS Round rewind restores positions, HP, effects, and seed
+PASS A completed turn can be rewound at start of next actor turn
+PASS Illegal effect operations are rejected
+
+16 passing tests
+PASS: invalid commands are atomic and role-gated
+PASS Aura rule adds modifiers as DATA, no aura-specific engine routine
+PASS Aura ends on specifically affected creature hitting its own archon
+PASS Other failed save does not trigger the aura
+PASS Pudding: slashing cancels damage and clones at half original HP
+PASS Pudding: unlisted damage type does not split
+PASS Pudding: at or below 10 HP does not split
+PASS Contingent action offers an interrupt once, and may be declined
+PASS Invalid operation leaves no partially changed state
+8 passing vocabulary-probe tests
+PASS entering an aura automatically rolls once and changes derived stats
+PASS remaining in aura does not repeatedly request saving throws
+PASS successful aura save creates 24-hour immunity marker for this source
+PASS an affected creature hitting its own archon ends penalty and marks immunity
+PASS automatic split cancels slashing damage and places a second pudding
+PASS pudding takes normal fire damage
+PASS pudding at 10 or less HP cannot split
+PASS Vienna aura automatically makes Fort save and teleports to legal square
+PASS Undo round restores aura exposure history, effects, and coordinates
+PASS rejected automation is atomic across HP, rule state and RNG
+PASS unknown operation is blocked when registering a rule
+PASS optional rule can pause and be explicitly accepted or declined
+PASS mid-damage optional interrupt is rejected until a resumable scheduler exists
+PASS failed automatic split rolls back all earlier mutations and RNG
+PASS non-weapon slashing effect does not cause black pudding split
+PASS automation engine includes rule state in turn rollback
+PASS a terrain hazard subscribes to tile-enter and deals automatic damage
+
+17 integrated automation tests passed
+PASS normal action pool: one standard, one move, one swift
+PASS a standard can substitute for a second move, never the reverse
+PASS third normal movement denied transactionally
+PASS normal move followed by attack consumes the separate standard
+PASS five-foot step uses no move action, but disallows other actual movement
+PASS ordinary movement precludes later five-foot step
+PASS full-round action costs standard and move, but leaves swift and step available
+PASS invalid attack does not consume standard and does not advance the RNG
+PASS AoO reactions do not consume active actor standard action
+PASS AI actor role can take actions, but cannot use GM-only effects or action grants
+PASS omitted role defaults to restricted actor, not administrator
+PASS GM-only override attacks do not spend creature actions
+PASS GM direct damage cannot be used by a player; explicit admin damage remains action-free
+PASS player cannot decide an enemy interrupt or manipulate grants
+PASS Choker Quickness is declarative, grants 1 extra move on turn start
+PASS Choker third actual movement is legal; fourth is rejected
+PASS Choker can full-round act and still spend bonus move action
+PASS Choker gets only one extra move each turn, including later rounds
+PASS undo turn restores Choker Quickness pool and GM-grant source audit
+PASS failed grant command leaves action pool and activity unchanged
+PASS registered action grant validates types and does not allow fake commands
+
+21 action economy tests passed
+PASS published PF1e Choker: 10-foot reach, 20-foot move speed
+PASS entering Choker 10-foot threat from outside produces no AoO
+PASS leaving Choker 10-foot threatened square to approach adjacent provokes BEFORE entry
+PASS entering a 5-foot-only threat does not provoke even when the actor ends adjacent
+PASS leaving a 5-foot threat provokes even when moving farther away
+PASS five-foot step never provokes when leaving Choker natural reach
+PASS Choker can move towards Explorer and make a real standard attack
+
+7 AoO / UI-activity regression tests passed
+
+Browser smoke tests (headless Chromium, bundled offline HTML):
+PASS: entering Choker's threatened area does not provoke; leaving a threatened square pauses before entry
+PASS: Choker gets 2 move and 1 standard actions, can move 3 times via standard substitution, 4th move blocked
+PASS: Choker can move and attack through the active-creature grid interface
+PASS: 5-foot step from threatened area does not provoke
+PASS: a full-round spend leaves Choker's extra move available
+PASS: other NPC fixtures retain active-creature grid controls
+PASS: no uncaught browser JavaScript exceptions

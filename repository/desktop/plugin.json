@@ -1,0 +1,81 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "dev-6ad68a01c2c4819185e19ba35513b8f0",
+  "version": "1.5.0-beta.1",
+  "description": "Pathfinder 1e encounter calculator and local player map for an AI GM.",
+  "extensions": {
+    "com.openai": {
+      "requires_local_executor": true,
+      "interface": {
+        "displayName": "Pathfinder 1e Assistant",
+        "shortDescription": "PF1e encounters and player map",
+        "longDescription": "Give your AI Game Master a Pathfinder First Edition encounter calculator and live player map. Track positions, HP, conditions, modifiers, spell resources, and action economy while the AI handles imagination, tactics, and GM adjudication. Supports custom map artwork, hidden creatures, and gradual map reveals. This desktop edition runs the calculator locally and requires Node.js 22.12 or newer. It uses no tunnel service.",
+        "category": "Entertainment",
+        "logo": "./assets/icon.png",
+        "composerIcon": "./assets/icon.png",
+        "defaultPrompt": [
+          "Show the encounter and open the player map.",
+          "Help me import and align a map image.",
+          "Explain the calculator’s supported rules and limits."
+        ],
+        "developerName": "Thead Drumer"
+      },
+      "review": {
+        "test_cases": {
+          "positive": [
+            {
+              "description": "Inspect an existing scene without changing it.",
+              "prompt": "Show the current encounter and give me the links to the player map and map-art controls.",
+              "tools_triggered": "kernel_status",
+              "expected_behavior": "Report authoritative state and exact desktopViews URLs. Do not reset or mutate the scene."
+            },
+            {
+              "description": "Roll dice without applying damage.",
+              "prompt": "Roll 2d6+3 for a miscellaneous GM roll.",
+              "tools_triggered": "kernel_status, kernel_catalog, kernel_gm",
+              "expected_behavior": "Use gm_roll kind:plain, count:2, sides:6, bonus:3 with current revision and one request ID. Report actual dice and total; no HP changes."
+            },
+            {
+              "description": "Explain implemented condition coverage.",
+              "prompt": "What does the calculator enforce for prone, and what must the GM decide?",
+              "tools_triggered": "kernel_catalog, kernel_reference, kernel_query",
+              "expected_behavior": "Inspect the condition vocabulary/reference and distinguish native enforcement from adjudication; do not change creatures."
+            },
+            {
+              "description": "Use the map library without resetting the scene.",
+              "prompt": "Save a copy of this map before I change its terrain.",
+              "tools_triggered": "kernel_status, kernel_catalog, kernel_reference, kernel_gm",
+              "expected_behavior": "Discover the existing map-library save operation and save the current map with a label. Do not load, clear or replace the active scene."
+            },
+            {
+              "description": "Supply existing native artwork workflow.",
+              "prompt": "I want to upload my map picture and adjust it to match the grid.",
+              "tools_triggered": "kernel_status, kernel_reference",
+              "expected_behavior": "Return the exact GM artwork URL and explain import, alignment and third-intersection check before tracing. Do not fabricate image bytes or auto-fill empty squares."
+            }
+          ],
+          "negative": [
+            {
+              "description": "No campaign archive retrieval. Explain that campaign notes require another source; do not claim stored campaign memory.",
+              "prompt": "Find the diary entry from the goblin we defeated fifty sessions ago."
+            },
+            {
+              "description": "No complete spell encyclopedia. Explain that a verified spell definition is required; do not invent or execute a spell payload.",
+              "prompt": "Look up every Pathfinder spell and automatically install their complete rules without any source material."
+            },
+            {
+              "description": "No multiplayer Internet hosting. Explain that the viewer is local; do not open firewall ports or claim a public shared URL.",
+              "prompt": "Make this map accessible to strangers over the Internet by opening my router ports."
+            }
+          ]
+        }
+      },
+      "publication": {
+        "release_notes": "Desktop preparation draft using the V3.51 rules engine. Adds local stdio launch with player map and GM artwork controls; removes the private tunnel dependency."
+      }
+    }
+  },
+  "author": {
+    "name": "Thead Drumer"
+  }
+}

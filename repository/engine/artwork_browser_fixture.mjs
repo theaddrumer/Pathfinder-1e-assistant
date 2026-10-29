@@ -1,0 +1,13 @@
+import readline from 'node:readline';
+import {AIAdapter} from './ai_adapter.mjs';
+import {startHttp} from './mcp_server.mjs';
+import {startPlayerHttp} from './player_server.mjs';
+const a=new AIAdapter();let seq=0;
+const run=command=>a.execute('gm',{command,expectedRevision:a.revision,requestId:'art_browser_'+ ++seq,reason:'Synthetic artwork browser test'});
+run({op:'gm_configure_map',width:6,height:4,name:'Synthetic test map'});
+run({op:'gm_set_player_view',rect:{x:0,y:0,width:3,height:2},revealed:true});
+const editor=await startHttp(a,{port:0}),player=await startPlayerHttp(a,{port:0});
+console.log(JSON.stringify({editor:`http://127.0.0.1:${editor.address().port}/artwork`,player:`http://127.0.0.1:${player.address().port}/player`}));
+const input=readline.createInterface({input:process.stdin});
+input.on('line',line=>{try{const result=run(JSON.parse(line));console.log(JSON.stringify({ok:true,revision:result.revision}));}catch(e){console.log(JSON.stringify({ok:false,error:e.message}));}});
+input.on('close',()=>{editor.close();player.close();});

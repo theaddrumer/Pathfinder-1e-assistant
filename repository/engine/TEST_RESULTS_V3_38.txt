@@ -1,0 +1,1297 @@
+Node: 47/47 suites passed
+Browser: 40/40 suites passed
+
+47/47 suites passed
+
+ability_loss_tests.mjs: PASS
+PASS Ability damage accumulates; penalty advances only per two points
+PASS Drain lowers actual score and follows modifier breakpoints
+PASS Damage, drain, and timed modifier occupy separate tracks
+PASS Con damage and drain adjust current/max HP when HD known, preserving injuries
+PASS Constitution effects also refresh HP when applied and removed
+PASS Con damage without HD returns explicit warning instead of guessing HP
+PASS Ailments can deal drain while their cure does not restore it
+PASS Damage plus drain from one ailment remain independent
+PASS Temporary ability penalty alone cannot reduce an ability below 1
+PASS Zero ability score and lethal ability damage are flagged
+PASS Direct ability mutations reject actor role and rollback on bad commands
+PASS Undo and save/reload preserve separate reservoirs and HP adjustment
+PASS Ailment validator rejects malformed drain fields
+Total V3.6.1 ability loss tests: 13
+
+
+action_economy_tests.mjs: PASS
+PASS normal action pool: one standard, one move, one swift
+PASS a standard can substitute for a second move, never the reverse
+PASS third normal movement denied transactionally
+PASS normal move followed by attack consumes the separate standard
+PASS five-foot step uses no move action, but disallows other actual movement
+PASS ordinary movement precludes later five-foot step
+PASS full-round action costs standard and move, but leaves swift and step available
+PASS invalid attack does not consume standard and does not advance the RNG
+PASS AoO reactions do not consume active actor standard action
+PASS AI actor role can take actions, but cannot use GM-only effects or action grants
+PASS omitted role defaults to restricted actor, not administrator
+PASS GM-only override attacks do not spend creature actions
+PASS GM direct damage cannot be used by a player; explicit admin damage remains action-free
+PASS player cannot decide an enemy interrupt or manipulate grants
+PASS Choker Quickness is declarative, grants 1 extra move on turn start
+PASS Choker third actual movement is legal; fourth is rejected
+PASS Choker can full-round act and still spend bonus move action
+PASS Choker gets only one extra move each turn, including later rounds
+PASS undo turn restores Choker Quickness pool and GM-grant source audit
+PASS failed grant command leaves action pool and activity unchanged
+PASS registered action grant validates types and does not allow fake commands
+
+21 action economy tests passed
+
+
+aoo_ui_regression_tests.mjs: PASS
+PASS published PF1e Choker: 10-foot reach, 20-foot move speed
+PASS entering Choker 10-foot threat from outside produces no AoO
+PASS leaving Choker 10-foot threatened square to approach adjacent provokes BEFORE entry
+PASS entering a 5-foot-only threat does not provoke even when the actor ends adjacent
+PASS leaving a 5-foot threat provokes even when moving farther away
+PASS five-foot step never provokes when leaving Choker natural reach
+PASS Choker can move towards Explorer and make a real standard attack
+
+7 AoO / UI-activity regression tests passed
+
+
+architecture_audit_tests.mjs: PASS
+PASS generic and skill-specific modifiers share one stacking calculation
+PASS ability-check stacking is consistent in the condition layer and full kernel
+PASS automatic effect removal preserves its activity flag through every override
+PASS ranged ability substitution swaps ability damage dependencies as well as modifiers
+PASS rolled and direct healing restore the same lethal and nonlethal damage
+PASS undo after a manual heal selects the current turn
+PASS spawned traits apply before entry-zone effects
+PASS a summon defeated by an entry effect departs without rolling back its arrival
+PASS nonlethal incapacitation during an AoO stops suspended movement
+PASS turn-start callbacks observe the advanced world clock
+PASS a due world-time decision defers automatic turn effects until acknowledged
+PASS all read-only views remain available and pure during a pre-turn checkpoint
+PASS a departed fear source leaves a usable condition and controller view
+PASS a failing nested automation restores state, RNG, and every undo checkpoint
+PASS maneuver bonuses stack across attack/CMB and AC/CMD input categories
+PASS Tiny derived CMB uses Dexterity damage instead of Strength damage
+PASS derived spell DC includes mental ability damage while fixed DC stays authoritative
+PASS caught nested transaction errors cannot commit partial state
+PASS one command copies each rollback state once; read-only lifecycle copies none
+PASS deferred turn ailments resolve once and the undo checkpoint includes their result
+PASS simultaneous time checkpoints drain in order and start the turn once
+PASS offhand and multiplied Strength bonuses never scale a negative modifier
+V3.29 architecture audit: 22 passed, 0 failed
+
+
+attack_completion_tests.mjs: PASS
+PASS Nonlethal damage tracks separately and does not reduce ordinary HP
+PASS Nonlethal equals current HP -> staggered; exceeds -> unconscious and no actions
+PASS Nonlethal immunities and DR still work
+PASS Excess nonlethal hits turn lethal on a later attack (without regeneration)
+PASS Magical healing cures equivalent nonlethal; GM direct cure only nonlethal
+PASS Weapon size progression 1d6 -> 1d8 and 1d8 -> 2d6
+PASS Scaled 2d6 damage rolls two dice once, not two separate damage components
+PASS Ranged projectile uses Dexterity, penalty per subsequent increment and no Str bonus to damage
+PASS Thrown weapons cap at five increments and projectile weapons at ten
+PASS Ranged touch automatically targets touch AC and respects wall total cover
+PASS Firing into melee is -4 unless Precise Shot; declarations override geometry
+PASS Validation and rollback protect import and generated attack dice
+PASS Ranged full attack resolves more than one imported attack beyond melee reach
+PASS Unarmed strike is nonlethal by default with no conversion penalty
+PASS Prone target takes +4 AC against ranged attacks and -4 against melee
+15 V3.18 attack completion tests passed
+
+
+attack_foundation_tests.mjs: PASS
+PASS a single natural attack does not gain manufactured BAB iterative strikes
+PASS standard attack uses the selected imported attack slot, including its named rider
+PASS natural bite defaults to one simultaneous B/P/S damage roll
+PASS natural claw and sting have the Bestiary default damage types
+PASS multi-typed bite still triggers Black Pudding Split from piercing/slashing
+PASS grab is defined independently of bite, including +4, -20 and optional action
+PASS multi-type bite bypasses either DR/slashing or DR/piercing
+PASS mixed damage types do not create multiple damage rolls or multiple DR reductions
+PASS imported creature attack descriptors survive registration, instantiation and readback
+PASS weapon profiles can independently declare simultaneous B/P damage
+PASS multi-type packet component uses one amount and may bypass slash-based DR
+PASS separate fire component is not merged with bite physical DR or rolled three times
+PASS malformed imported attack records and unknown riders fail atomically
+PASS ranged profiles without a specified range cannot execute
+PASS attack rider does not automatically grapple or deal Constrict damage
+15 attack foundation tests passed
+
+
+attack_routines_tests.mjs: PASS
+PASS No-plan explicit attack entries remain authoritative
+PASS TWF modifiers no feats: -6 primary, -10 offhand plus optional light reduction
+PASS Improved/Greater TWF extra offhand attacks and penalties
+PASS Mixed manufactured + natural attacks are secondary, Multiattack reduces penalty
+PASS Pure natural full attacks use primary/secondary roles with no iteratives
+PASS Single natural attack uses 1.5 × Strength where derived; printed baseline not double-counted
+PASS Plan validates duplicate limbs and missing prerequisite feats
+PASS Creature registry accepts attack plan and ammunition but rejects unknown fields
+PASS Projectile consumes ammunition on a miss, no other store changes
+PASS Zero ammo rejects action atomically before roll and action spend
+PASS Reload consumes move action and transfers spare to loaded; shot consumes one
+PASS Reload into threatening melee pauses, take AoO before loaded
+PASS Ranged attack AoO decline resumes exactly one shot after interrupt
+PASS Ranged AoO incapacitating shooter prevents the shot and does not spend ammo
+PASS Ranged full attack interrupted before first attack preserves cursor
+PASS Undo turn restores projectile ammunition and reload action
+PASS Thrown weapon must be drawn if drawing costs an action; no double consumption
+PASS Ranged touch ray provokes for delivery without charging another action
+PASS A single ranged attack can offer AoOs to two threatening enemies, then fires once
+PASS GM ammunition edits are authorized, bounded, and atomic
+20 V3.19 attack routine tests passed
+
+
+automation_tests.mjs: PASS
+PASS entering an aura automatically rolls once and changes derived stats
+PASS remaining in aura does not repeatedly request saving throws
+PASS successful aura save creates 24-hour immunity marker for this source
+PASS an affected creature hitting its own archon ends penalty and marks immunity
+PASS automatic split cancels slashing damage and places a second pudding
+PASS pudding takes normal fire damage
+PASS pudding at 10 or less HP cannot split
+PASS Vienna aura automatically makes Fort save and teleports to legal square
+PASS Undo round restores aura exposure history, effects, and coordinates
+PASS rejected automation is atomic across HP, rule state and RNG
+PASS unknown operation is blocked when registering a rule
+PASS optional rule can pause and be explicitly accepted or declined
+PASS mid-damage optional interrupt is rejected until a resumable scheduler exists
+PASS failed automatic split rolls back all earlier mutations and RNG
+PASS non-weapon slashing effect does not cause black pudding split
+PASS automation engine includes rule state in turn rollback
+PASS a terrain hazard subscribes to tile-enter and deals automatic damage
+
+17 integrated automation tests passed
+
+
+casting_tests.mjs: PASS
+PASS 1-round cast spends full-round action and has no immediate effect
+PASS full_round action remains immediate and differs from 1_round
+PASS completion is before next caster turn and leaves normal actions available
+PASS targets can change at completion, preserving other spell fields
+PASS bad completion is atomic and can be retried
+PASS multi-round casts pay one full-round action on each consecutive turn
+PASS skipping continuation loses the spell instead of preserving free progress
+PASS another spell, delay, or encounter mode change cannot bypass casting
+PASS five-foot step remains available during the paid full-round casting action
+PASS failed automatic injury concentration loses an in-progress spell
+PASS separate damage sources each check concentration and keep successful casting
+PASS fully resisted damage does not roll concentration
+PASS multi-component packet causes one check after mitigation
+PASS temporary HP damage still requires concentration
+PASS a weapon hit with extra energy damage uses one concentration check
+PASS resumed ranged attacks still group weapon and bonus damage into one check
+PASS two threatening enemies are handled individually and spend real AoOs
+PASS successful automatic AoO injury is not rolled again on resumption
+PASS swift casting does not provoke even while threatened
+PASS allies and creatures without remaining AoOs are not offered attacks
+PASS entangled casting checks concentration and consumes the action on failure
+PASS unconsciousness breaks casting without requiring an injury roll
+PASS continuous damage concentration can be supplied without dealing damage twice
+PASS explicit unusual distraction can break casting and GM-only commands stay restricted
+PASS cancellation resolves completion checkpoint without spending normal actions
+PASS an imported incapacitated ready caster cannot leave a stuck pre-turn checkpoint
+PASS clock-indexed minute casting finishes at 10 rounds and stops Fast Forward for targeting
+PASS Fast Forward can pause before casting completion and resume without losing its deadline
+PASS partial downtime casting preserves progress if play resumes in turns
+PASS failed automatic damage during downtime cancels the pending casting deadline
+PASS registered continuous damage uses half its last damage for concentration
+PASS final continuous pulse deals damage but no longer distracts casting
+PASS undo restores casting, its paid action, and concentration RNG together
+PASS serialization preserves multiple casters and paid progress independently
+PASS invalid damage and modifier payloads are rejected before paying a long casting action
+PASS malformed casting duration cannot consume actions or RNG
+V3.24 casting: 36 groups passing
+
+
+charge_and_double_move_tests.mjs: PASS
+PASS explicit standard-action move retains available move action
+PASS normal move and standard-action move work in either order
+PASS double movement covers two speed budgets and consumes two move actions
+PASS too-long double move fails transactionally
+PASS mixed diagonal and orthogonal path has correct 5/10 cost
+PASS charge moves to closest legal reach square and makes one +2 attack
+PASS charge chooses closest position for reach-10 attacker without approaching adjacent
+PASS charge penalizes normal, touch and flat-footed AC
+PASS charge AC penalty persists through opponent turn, expires at start of next own turn
+PASS charge attack waits for AoO decision and resolves once
+PASS taking AoO during charge works in automatic-rule subclass
+PASS charge refuses 5ft too-close target even if farther landing possible
+PASS charge refuses wall-blocked closest attacking square
+PASS charge refuses any difficult square in charging line
+PASS charge refuses five foot step first or ordinary move first
+PASS ordinary actor may charge but cannot supply nonstandard attack defense
+PASS charge and double move prevent further standard attacks, without removing swift
+PASS charge into occupied or wall route fails, no RNG/action cost
+PASS charge AC penalty and movement restore on undo
+PASS printed AC totals receive charge penalty, without rewriting their baseline
+PASS charging gives one attack even when an explicit full-attack routine has two
+PASS Choker Quickness extra move remains after charge with its full-round resources consumed
+
+22 charge/double-movement tests passed
+
+
+choker_movement_regression_tests.mjs: PASS
+PASS Choker movement provokes an Explorer AoO after Explorer approaches and attacks
+PASS Explorer may take AoO and Choker movement continues if Choker survives
+PASS Choker extra move does not override the five-foot-step restriction
+
+
+concentration_tests.mjs: PASS
+PASS one native Pending Event owns maintenance and shared lifetime
+PASS missing upkeep ends all linked effects, while movement remains available
+PASS delay cannot skip required upkeep
+PASS another spell is blocked before any action or resource expenditure
+PASS maintenance spends actions but never re-spends or resizes a spell slot
+PASS multi-component damage checks once; failure ends concentration and native effects
+PASS temporary HP counts as damage; fully resisted hits do not check
+PASS one weapon hit groups physical and extra energy damage
+PASS continuous damage reuses the half-damage check, including during Fast Forward
+PASS incapacitation and explicit environmental checks use the same termination path
+PASS voluntary stop costs no action and can create a bounded lingering tail
+PASS damage failure permits declared lingering effects; dispelling does not add a tail
+PASS maximum is a native deadline and includes any lingering tail
+PASS Fast Forward needs explicit maintenance, migrates deadlines and preserves pure views
+PASS partial dispel preserves other recipients and stops maintenance only after the last link
+PASS ordinary overlapping spell effects survive concentration termination
+PASS fixed regions share the concentration lifetime and keep occupancy semantics
+PASS dispelling a region ends concentration without disturbing a separate region
+PASS area self-damage interruption cannot leave orphaned condition effects
+PASS summoned caster departure ends maintained regions through native cleanup
+PASS a new entry condition that breaks its own concentration leaves no unbound effect
+PASS long casting completion establishes concentration without charging the deferred turn twice
+PASS restore and undo retain native maintenance and remove its links together
+PASS invalid payloads and forged event commands reject atomically
+V3.33 concentration: 24 groups passed
+
+
+condition_ailment_tests.mjs: PASS
+PASS 34 condition definitions and statuses
+PASS shaken penalty affects attack, saves and skills
+PASS condition refresh does not stack
+PASS fear escalation suppresses weaker instead of doubling
+PASS frightened proximity advisory does not reject legal move
+PASS dazed blocks creature actions without blocking GM override
+PASS fatigued escalates to exhausted rather than stacking penalties
+PASS prone contextual AC only during melee attack
+PASS flat-footed attack defense uses published value
+PASS standard conditions expire on target turns
+PASS unauthorized GM commands reject actor
+PASS initial saved exposure avoids ailment
+PASS failed exposure deals ability damage, not a changed base score
+PASS two consecutive successful saves cure, failures reset streak
+PASS nonconsecutive cure succeeds across failures
+PASS limited poison expires after maxTicks, no recurring saves
+PASS disease onset and day frequency
+PASS HP DOT auto-ticks without save and expires
+PASS strict validator rejects injected code / unknown effects
+PASS GM can heal ability damage without curing poison
+PASS registered ailments persist undo; applications roll back
+PASS multiple concurrent independent target instances
+PASS status action restrictions block second staggered major action
+PASS nauseated allows one move but not standard or a second move
+PASS stunned suppresses attacks of opportunity
+PASS condition effects survive save/load with distinct instance state
+PASS condition removal does not erase unrelated modifiers
+PASS con ability damage affects Fortitude but does not rewrite the printed score
+PASS invalid ailment registration is transactional
+PASS onset-delayed damage fires at scheduled time not before
+PASS turn-start ailment tick contributes to checkpoint so undo does not erase it
+Total V3.6 condition/ailment tests: 31
+
+
+critical_precision_tests.mjs: PASS
+PASS Threat confirmed: rolls weapon damage twice, precision and flaming once each
+PASS Natural 20 hits automatically but natural 1 on confirmation fails
+PASS A roll in the extended threat range must still beat AC
+PASS Keen and Improved Critical both double original range, do not stack
+PASS Fortification 25% can negate a confirmed crit while normal hit remains
+PASS Fortification 25% does not negate on d% 26
+PASS Native precision immunity preserves base damage and fire dice
+PASS OoZe and elemental inherit BOTH immunities but undead does not automatically
+PASS A shared fortification roll cancels crit and precision together
+PASS Worn armor fortification works, carried and dropped armor does not
+PASS Native protection and worn fortification do not add together
+PASS Precision is explicitly enabled per attack, not assumed from the weapon profile
+PASS Precision added to physical hit and DR is applied once
+PASS Critical and precision chances may be independently defined
+PASS Spell packet precision inherits fire type and energy resistance is applied once
+PASS An ooze ignores attached spell precision but remains vulnerable to ordinary fire
+PASS A spell packet makes one fortification check for qualifying precision
+PASS Registration rejects malformed critical, precision, and fortified equipment
+PASS Failed actions preserve HP, test-roll list, and critical state via rollback
+19 V3.13 critical and precision checks passed
+
+
+defense_tests.mjs: PASS
+PASS Mithral armor modifies cap, ACP, spell failure and effective category without altering proficiency
+PASS Adamantine armor gives armor weight-specific DR/- and no invented DR to shield
+PASS Printed AC is authoritative; removing shield and armor subtracts the correct derived deltas
+PASS Derived equipment mode gets AC bonus and dex cap adjustment without base armor double-count
+PASS Broken armor and shield halve AC grants; broken armor doubles remaining armor check penalty
+PASS Cover changes AC, total cover blocks target and fails atomically
+PASS Concealment miss prevents critical, damage and on-hit riders before confirmation
+PASS Blind-Fight gives one reroll only for melee, ranged feats stay independent
+PASS Blindsight defeats blur/displacement within reach; blindsense alone does not
+PASS GM context is restricted to GM, malformed context rolls back, undo rolls back equipment
+PASS Registered creature validates and retains defensive equipment with printed AC
+11 V3.16 defensive tests passed
+PASS Removing armor restores capped Dexterity to both normal and touch AC
+PASS Persistent GM-managed defense profile applies independently of attack commands
+PASS Adamantine DR is applied to normal physical damage and not to energy
+PASS Concealment forbids precision even after successfully passing its miss chance
+
+
+effect_packet_tests.mjs: PASS
+PASS complete vocabulary lists baseline and named exceptional damage classes, excluding magic/epic properties
+PASS all named categories can be entered through ordinary GM damage commands
+PASS flame strike style packet splits fire from resistance-ignoring divine portion
+PASS hellfire ray style unholy portion damages devil by default
+PASS environment hellfire target-sensitive components are per effect, not universal
+PASS inherited Devil fire immunity and alignment-specific hellfire exception apply separately
+PASS alignment subtype weapon property bypasses DR but does not add damage
+PASS Devil natural and wielded weapons inherit both lawful and evil DR bypass
+PASS DR applies once to physical total in one packet, not each component
+PASS different component immunities and resistance use one atomic packet
+PASS unholy holy and the four alignment-named damage labels are not universally resisted based on alignment
+PASS enhancement values bypass DR but leave magic and Epic separate from damage type
+PASS incorporeal recognized +1 weapon automatically counts as magic
+PASS ambiguous subtype/actual alignment mismatches fail loudly, without HP mutation
+PASS invalid component and unknown metadata are atomic
+PASS GM packet permission gate is separate from actor action economy
+PASS dice components roll inside one validated and seed-replayable packet
+PASS default alignment multiplier expresses neutrality without hardcoded alignment damage rules
+18 V3.8 effect packet tests passed
+PASS ordinary attack inherits subtype-based alignment bypass
+
+
+encounter_basics_tests.mjs: PASS
+PASS negative HP, Constitution death threshold and ordinary healing never resurrect
+PASS failed stabilization loses 1 HP; natural 20 succeeds even with a huge penalty
+PASS continuous damage prevents stabilization and does not consume a d20
+PASS healing stabilizes; subsequent HP damage restarts dying
+PASS hourly aided and unaided recovery share the clock, and conscious negative HP is disabled
+PASS disabled move is allowed, standard action applies strain afterward, self-healing avoids strain
+PASS fast healing runs once per creature turn and catches up during downtime, then removes its deadline
+PASS recovery respects declared excluded HP and still heals nonlethal at the full rate
+PASS regeneration prevents HP death, matching damage suppresses and can kill immediately
+PASS immune damage does not suppress; packet component tags and explicit suppression do
+PASS regeneration bypass tags can describe aligned weapons; repeated shutdown preserves longer timers
+PASS regenerating creatures do not convert excess nonlethal damage into lethal
+PASS construct and undead destruction at zero, Constitution loss and permanent death survive restore
+PASS Summons still depart at zero HP; ordinary disabled tokens remain
+PASS own-turn immediate consumes current swift, off-turn immediate owes coming swift through turn end
+PASS flat-footed immediate is rejected atomically; owing a swift survives export and undo
+PASS cooldown is one nonblocking native event, cannot be generic-triggered, and emits readiness
+PASS cooldowns use initiative deadlines and preserve remaining time when initiative ends
+PASS stone estimate, explicit overrides, and material/size validation
+PASS objects share tokens and damage; energy is halved before hardness; broken and destroyed are derived
+PASS hardness applies once to a mixed packet; ranged and declared vulnerabilities are explicit
+PASS object immunities, unattended failed saves, attended and magical saves
+PASS objects cannot act or threaten, take no turns, and are excluded from initiative
+PASS read-only views preserve state and remain available at checkpoints; rejected mutations are atomic
+PASS persistent areas continue affecting unconscious living occupants and can heal them
+PASS dying creatures cannot Delay, while explicit Free Mode restoration is logged
+PASS off-turn immediate debt expires in elapsed time and is honored if initiative starts first
+PASS an actual weapon hit shares object hardness across its base and energy damage
+PASS invalid recovery configuration rolls back without changing state
+PASS temporary HP absorbs damage but does not prevent a qualifying regeneration shutdown
+V3.31: 30 encounter integration groups passed.
+
+
+falling_tests.mjs: PASS
+PASS ordinary fall increments and 20-die cap
+PASS deliberate jump, Acrobatics and yielding surface compose without double conversion
+PASS water uses d3 nonlethal bands and d6 lethal beyond 40 feet
+PASS dive success depends on actual distance, DC and water depth
+PASS special distance reduction and explicit damage/prone overrides
+PASS preview preserves state, RNG, checkpoints and availability during pending decisions
+PASS GM authority, strict input validation and failed landing are atomic
+PASS ordinary impact uses environmental damage, bypasses weapon DR and applies prone
+PASS mixed damage uses native nonlethal ledger; plain nonlethal fall and Acrobatics prone differ
+PASS nonlethal immunity and temporary HP stay in their existing owners
+PASS safe landing rolls nothing and does not remove a pre-existing prone condition
+PASS landing updates contact and triggers surface hazard once after impact
+PASS water landing can retain non-surface contact and height changes alone never roll damage
+PASS undo restores impact, elevation, conditions, nonlethal and RNG together
+PASS one mixed impact makes one concentration check for the complete damage
+PASS no object-impact rules or hidden fall timers are introduced
+16 falling groups passed
+
+
+final_offense_tests.mjs: PASS
+PASS Pull: hit, optional free check, fixed movement toward attacker, no additional action
+PASS Push: victim moves away, stops before wall, no AoO
+PASS Pull/Push size limit and decision decline
+PASS Energy Drain applies negative levels, penalties and 5 HP per level
+PASS Confirmed critical doubles energy drain; negation still leaves ordinary hit
+PASS 24h Fort save on every negative level, failure becomes permanent, success disappears
+PASS Negative levels equal Hit Dice kill; GM restoration does not auto-resurrect
+PASS Energy Drain immunity prevents levels and temporary HP
+PASS Temporary HP from Energy Drain absorbs incoming damage and expires
+PASS Repeat Energy Drain hits do not stack same-source temporary HP
+PASS Temporary HP applies after mitigation and to spell packets without phantom HP losses
+PASS Malformed rider definitions rejected atomically
+PASS Offensive rider decisions serialize through multiple choices without duplicating damage
+PASS Pull and Push checks do not inherit ordinary maneuver-specific feat bonuses
+PASS GM-only negative level commands reject non-GM and roll back invalid changes
+PASS Negative levels remain through export/import, and undo restores snapshots
+16 V3.15 test cases passed
+
+
+foundation_tests.mjs: PASS
+PASS devil inherits fire immunity and acid/cold resistance with no double application
+PASS subtype suppression explicitly overrides fire immunity
+PASS demon and devil resistances do not add together
+PASS incorporeal blocks mundane weapons, halves magical and takes full force and ghost touch
+PASS DR sources do not stack; evaluate bypass for each before choosing highest
+PASS effect descriptors let subtype immunity operate before condition logic
+PASS undead poison/disease ailment blocked before rolling any exposure save
+PASS undead physical ability damage immune, mental ability damage not automatically immune
+PASS HD formula and Charisma drain recalculate DC
+PASS spell/class/BAB/racial/fixed DC formulas handle alternate scale
+PASS undead substitutes CHA for CON-based DC while construct uses +0
+PASS invalid definitions rejected and not retained
+PASS only GM may resolve raw damage and calculations without action costs
+PASS persistent defenses save, restore and preserve source trace
+PASS mindless ooze default immunity can be overridden by an intelligent ooze
+PASS construct Fortitude-save immunity preserves harmless/object exceptions
+PASS ordinary attack resolution forwards authored magical-weapon metadata to defenses
+17 V3.7 foundational tests passed
+
+
+full_attack_tests.mjs: PASS
+PASS Choker has two equal-bonus primary tentacles and correct damage profile
+PASS full attack rolls separately and consumes standard plus regular move
+PASS full attack is incomplete until all strikes resolved or explicitly forfeited
+PASS Choker may spend bonus move before and after full attack, as appropriate
+PASS ordinary move before full attack makes full-round action unavailable without special grant
+PASS five-foot step between natural attacks is legal and does not provoke
+PASS target for second natural attack can be different after observing first
+PASS invalid pending attack cannot consume a strike or die roll
+PASS a full attack cannot be initiated a second time with a pending sequence
+PASS BAB iterative attacks generated at successively lower bonuses
+PASS single standard attack still only rolls once even with 2 natural weapons
+PASS actor cannot use GM override while their full attack remains unresolved
+PASS undo current turn restores unused Choker full attack and Quickness grant
+PASS full attack followed by Quickness movement still pauses for Explorer AoO
+PASS five-foot step before full attack preserves the full-round action
+
+15 full-attack tests passed
+
+
+initiative_tests.mjs: PASS
+Initiative V3.20 PASS: 15 tests
+Additional V3.20 initiative edge cases passed
+
+
+integration_tests.mjs: PASS
+PASS fresh empty encounter and pure status/query/catalog
+PASS tool-only setup, initiative and action expenditure do not need direct state writes
+PASS ordinary tool cannot invoke GM overrides or smuggle role metadata
+PASS retry executes once, changed request IDs conflict, stale intentions reject
+PASS native validation failure restores RNG, engine state, checkpoints and adapter revision
+PASS persistence failure does not acknowledge or commit a command
+PASS saved restart preserves retries and native undo checkpoints
+PASS movement AoO continuation resumes the original paid path
+PASS casting pauses expose native AoO decisions and one safe resume
+PASS full attack continuation exposes next strike and finish rather than restart
+PASS time checkpoint choices acknowledge the proper owner without advancing again
+PASS scene closure discards enemies without a new campaign archive
+PASS bounded query pages and full result details never rerun mechanics
+PASS JSON input guards and MCP tool failures are structured
+PASS catalog agrees with native read-only classification and every reference exists
+15 integration groups passed
+
+
+lifecycle_tests.mjs: PASS
+PASS unified deadline index orders different sources without changing native records
+PASS GM lifecycle inspection is read-only and never advances the clock
+PASS ending a spell modifier unlinks its initiative expiry but not other deadlines
+PASS expiration at its initiative count never leaves an orphan entry
+PASS common interrupt preflight sees pending casting while GM initiative corrections remain possible
+PASS pending event decision and deferred turn are distinguished from automatic timers
+PASS initiative crossing boundary predicate shared across consumers
+V3.23 lifecycle: 7 regression groups passed
+
+
+magic_tests.mjs: PASS
+PASS grid distance follows 5-10-5 diagonal rule
+PASS sphere includes whole far-edge square and excludes near-edge-only
+PASS cone quarter-circle faces chosen octant and does not affect behind
+PASS line stops at wall and five-foot-wide template does not occupy two full rows
+PASS burst blocked by wall while spread goes around obstacle
+PASS multi-square creature is affected if any occupied square in area
+PASS invalid area definitions reject without modifying game
+PASS normal saving throw 20 succeeds on extreme DC; half damage before mitigation
+PASS single damage roll for area spell shared across different creatures
+PASS SR check is a caster-level check without natural 20 automatic success
+PASS spell resistance succeeds numerically; save negates damage
+PASS defensive casting uses 15 + 2x spell level with NO natural-20 guarantee
+PASS defensive cast success resolves and spends action
+PASS provoking spell defers outcome until GM confirms AoOs and damage concentration
+PASS cast error restores action, RNG, and state
+PASS magic and Pending Events share state and undo without losing registrations
+V3.22 magic foundations: 16 groups passing
+PASS timed spell modifier expires at caster initiative count, not victim turn end
+PASS initiative-timed spell converts to world-clock expiry on encounter end
+PASS pending casting blocks end turn until resolved
+PASS diagonal line length uses 5-10-5, not one square per five feet
+PASS healing spells reuse lethal and nonlethal healing, roll once per spell
+
+
+maneuver_extended_tests.mjs: PASS
+PASS Dirty Trick all six conditions exposed, one shared mechanic
+PASS Dirty Trick checks margin and target can spend move to remove
+PASS Greater Dirty Trick uses d4 duration, standard action to remove
+PASS Condition supersession does not create an invalid Dirty Trick removal record
+PASS Dirty Trick cannot be removed as creature action by the wrong combatant
+PASS Reposition follows supplied path and caps movement at margin
+PASS Reposition never permits hazardous tiles or occupied squares
+PASS Drag moves both creatures backward into vacated squares
+PASS Drag stops before wall without overlapping creatures
+PASS Steal requires exposed registered item and transfers item to attacker
+PASS Steal rejects held and unregistered hidden items
+PASS Fastened items confer effective +5 CMD to Steal
+PASS Overrun target chooses to avoid without a maneuver check
+PASS Overrun refusal causes maneuver check and prone with margin 5
+PASS Improved Overrun prevents the avoid choice
+PASS Overrun blocked destination rejects before action is spent
+PASS GM free movement retains normal AoO pause and no action cost
+PASS GM free movement can affect a non-active creature without charging the active turn
+PASS GM adjudication bridges modifier and condition without new condition subsystem
+PASS Player/actor cannot call the GM override gateway
+PASS Bad GM movement and missing reason roll back entirely
+PASS Dirty Trick and reposition state roll back with undo
+22 extended maneuver/GM override tests passed
+
+
+maneuver_tests.mjs: PASS
+PASS PF1 CMB/CMD size modifiers are not the reversed size-to-attack modifier
+PASS Tiny creatures use Dexterity for calculated CMB
+PASS Imported CMB/CMD are authoritative with registered modifiers
+PASS Trip succeeds and applies prone without consuming extra action
+PASS Trip failed by ten knocks initiator prone
+PASS Trip respects extra legs, immunities and maximum relative size
+PASS Maneuver interrupt penalizes roll by AoO hit point damage
+PASS Improved maneuver prevents provoking AoO
+PASS Untrusted actor cannot inject +100 CMB or instant sunder damage
+PASS Disarm drops registered held item, not deletes it
+PASS Sunder uses hardness and marks item broken below half HP
+PASS Bull rush moves target and stops before occupied square
+PASS Grapple creates relation and both grappled conditions, escape removes both
+PASS Grapple maintenance gets +5, pins and cleans pinned on release
+PASS Grapple lapses at end of following unmaintained turn
+PASS New maneuvers are available with validated parameters
+PASS Registration accepts equipment and maneuver flags, rejects invalid inventories
+PASS Disarm drops both hands when beating CMD by 10 or more
+PASS Broken or dropped equipment affects the linked attack rather than being merely a label
+PASS Active grapples block ordinary walking; release allows movement
+PASS Grapple state and condition effects roll back together on turn undo
+PASS Flat-footed CMD drops positive Dexterity and dodge bonuses
+PASS Shaken attack penalty also applies to combat maneuver checks
+PASS Stunned target grants +4 to maneuver check
+24 V3.10 maneuver tests passed
+
+
+map_features_tests.mjs: PASS
+PASS eight-way geometry and validation are atomic
+PASS boundary stops movement, attacks, charge and maneuvers before expenditure
+PASS parallel movement works; diagonals and larger footprints cannot tunnel
+PASS partial cells require explicit traversal and emit an overlap advisory
+PASS all eight cost directions, diagonal parity, and nonstacking overlaps
+PASS bent paths calculate each leg rather than direction from the initial square
+PASS incorporeal clearance is distinct from attack permission and force barriers
+PASS doors gate every spell shape and movement through shared geometry
+PASS spreads go around finite walls
+PASS bars require passage ruling; declared cover blocks AoOs
+PASS screens block sight rather than effects
+PASS cover uses native Reflex saves without changing stats, including improved-cover damage
+PASS spread excludes cover Reflex bonus; burst uses its origin
+PASS targeted spells and origin placement cannot bypass walls
+PASS forced push stops at wall; teleport does not trace intervening features
+PASS linked object retains native HP/hardness and destruction opens its barrier
+PASS door changes reuse persistent-area entry receipts
+PASS resize, restore, pure diagnostics, undo and scene closure
+PASS uphill then downhill restores elevation, including negative heights and annotations
+PASS all eight uphill directions reverse exactly, including stops on diagonal boundaries
+PASS failed movement changes neither height nor action budget; accepted steps and undo update together
+PASS airborne passage, annotation-only stairs and teleport do not alter height
+PASS multiple rises on a route accumulate and reverse without repeated charges inside the same level
+PASS height transitions validate direction/geometry and reject ambiguous overlapping rises
+PASS pending AoO does not apply rise early, continuation applies it exactly once
+PASS forced movement applies the same height transition
+V3.35 map features: 26 passed, 0 failed
+
+
+offensive_rider_tests.mjs: PASS
+PASS Free Trip appears after successful hit and never consumes another standard action
+PASS Failed special Trip does not trip the attacker or provoke an AoO
+PASS Trip and Grab share a serial decision queue without repeating attack damage
+PASS Trip on hit during full attack applies prone without charging a second action
+PASS Injury poison uses registered ailment and its initial Fortitude saving throw
+PASS Injury poison does not apply when DR prevents all weapon damage
+PASS Poison immunity from type/subtype stops injury rider
+PASS Missing poison definition errors before rolling and restores state
+PASS Bleed applies as a recurring ailment, ticking at next target turn start
+PASS Bleed same damage kind uses worse amount rather than stacking, and curing clears condition
+PASS Bleed immunity from elemental subtype does not create affliction
+PASS Paralysis Fort save failure applies timed condition, success does not
+PASS Paralysis immunity suppresses saving throw
+PASS Malformed rider parameter validation is strict
+14 V3.14 offensive rider tests passed
+
+
+pending_events_tests.mjs: PASS
+PASS indefinite conditional event only fires on explicit GM command
+PASS Readied Action costs one standard and expires at next owner turn, not six-second boundary
+PASS Ready trigger relocates initiative without refreshing standard action or granting extra turn
+PASS conditional turn-start event expires at named actor next turn, not round tick
+PASS encounter deadlines expire on GM encounter end; indefinite ones remain
+PASS time countdown expires quietly while Fast Forward warns
+PASS clock countdown triggers GM checkpoint at exact deadline, after automatic clock mechanics
+PASS clock countdown without GM checkpoint is automatic registry activation
+PASS initiative countdown triggers on empty count without scanning counts
+PASS untriggered initiative countdown migrates to world time after combat
+PASS GM can cancel/read pending list, unauthorized actor cannot modify
+PASS undo restores pending registrations and clock
+V3.21 pending events: 12 test groups pass
+PASS Pre-turn initiative GM checkpoint pauses next turn effects until acknowledged
+PASS Clock effects expire before Pending Event GM checkpoint at the same moment
+PASS A second registered Pending Event warning does not mutate time or character state
+Additional V3.21 timing and preflight tests pass
+PASS Readied Action always requires GM checkpoint; encounter end clears unused readiness
+
+
+persistent_area_tests.mjs: PASS
+PASS one native Pending Event owns geometry, payload and expiration; inspection is pure
+PASS normal casting pays a standard action, repeat exposures do not
+PASS registered casting expends one slot and keeps capacity frozen across repeated exposures
+PASS creation can be disabled; entry does not retroactively hit initial occupants
+PASS movement within an area does not count as another entry
+PASS default cooldown prevents same-round exit/re-entry and turn-start damage duplication
+PASS each_trigger explicitly permits repeated entry and turn exposures
+PASS turn-start-only areas affect the occupant at its own turn, not another turn
+PASS Fast Forward resolves all occupied-round exposures and expires before a final same-time pulse
+PASS empty long-lived areas jump directly to expiry without per-round ticks
+PASS inside-only modifiers end on exit and restore on re-entry without another damage roll
+PASS independently timed exposure modifiers survive exit and region removal, then expire normally
+PASS overlapping regions retain separate identities and remove only their own modifiers
+PASS initiative expiry honors an empty count before the next occupant turn
+PASS ending initiative migrates the same area timer and permits downtime exposures
+PASS caster movement and defeat do not move or terminate its fixed region
+PASS summoned caster removal preserves the area and bound modifiers, including after restore
+PASS SR result is cached for one region/recipient while repeat saves and mitigation use existing resolvers
+PASS damage dice are shared across simultaneous targets and rerolled at the next exposure
+PASS team filtering and wall-aware spread geometry are reused
+PASS area entry immediately stops movement if its payload defeats the mover
+PASS self-dispel targets a region through the existing spell resolver and clears bound effects
+PASS hostile dispels use the original caster level; failure and non-dispellable regions persist
+PASS area dispels respect range and line of effect
+PASS area expiry during long dispel casting resolves as a lost target rather than an invalid command
+PASS area modifier expiration precedes an ailment saving throw at the same clock deadline
+PASS spawning a creature inside a region uses its initialized traits before entry damage
+PASS time checkpoints see expired inside-only modifiers and read-only views remain accessible
+PASS undo and restored states preserve exact occupancy, cooldown and deadlines
+PASS invalid setup and forged native timers roll back state and RNG
+V3.30 persistent areas: 30 groups passed
+
+
+prone_dice_tests.mjs: PASS
+PASS prone penalizes melee and melee touch once, including confirmations and printed totals
+PASS rules-declared ranged exceptions keep their standing attack bonus
+PASS ranged touch weapons are not confused with rays
+PASS prone weapon rejection leaves action, ammunition, RNG, revision and continuations unchanged
+PASS prone exceptions still pay ammunition/action exactly once through ranged AoO continuation
+PASS a ranged shot made illegal by a reaction stops cleanly without spending ammunition
+PASS native ray casting while prone keeps attack bonus and spell damage
+PASS prone defender AC retains melee and ranged adjustments including touch
+PASS registered attack flag is validated and survives spawn/save; other attack entries do not inherit it
+PASS catalog example rolls dice with no creatures or HP/action/clock changes
+PASS plain roll cannot heal, spend slots/actions, advance timers or emit effect events
+PASS dice-only defaults and errors are explicit, rejected requests do not consume RNG
+PASS explicit damage/healing still use their existing application paths
+PASS 3.37 sessions preserve map, clock, undo and retry receipts on upgrade
+14 prone/dice groups passed
+
+
+registry_tests.mjs: PASS
+PASS GM registers and reuses creature definitions without affecting creature instances
+PASS Rejected registrations, illegal positions, and duplicate instances are atomic
+PASS Only GM can register, spawn, or inject effects; viewing the state is safe
+PASS Shaken applies −2 to attack, saves, skill and ability checks without changing ability scores
+PASS Skill and ability checks have no automatic natural-1 failure or natural-20 success
+PASS Re-applying a condition refreshes instead of double-counting penalties
+PASS Effects expire at end of the affected creature turn and stats return to baseline
+PASS Imported printed totals and ability dependencies respond to ability penalties
+PASS A declaration may attach a reusable declarative Quickness rule to each spawned instance
+PASS Undo removes dynamically spawned creatures AND their automation subscriptions
+PASS Exported state reloads as a working reusable catalog
+PASS Creature definitions survive undoing a subsequent combat action
+PASS Unknown effect stats are rejected; original stats never change
+PASS Authoritative printable attack and AC participate in engine attacks
+14 runtime-registry tests passed
+
+
+rider_integration_tests.mjs: PASS
+PASS Hit pauses for optional Grab; declining does not spend an action or reroll damage
+PASS Free Grab adds +4 CMB and successful initiating check triggers separate constrict once
+PASS Limb-only Grab leaves holder ungrappled and takes -20 CMB, +4 Grab
+PASS Maintaining Grab gets +5 maintain, +4 Grab; Constrict follows success, not failure
+PASS Failed Grab never inflicts Constrict or creates a grapple relationship
+PASS Grab without Constrict still damages on successful later maintenance checks
+PASS Normal Grab stops remaining strikes; limb-only hold may continue
+PASS Targets larger than Grab allowance do not create a pending choice
+PASS Full attack suspends after Grab hit; resume from second strike after decision
+PASS Trip replaces full attack slot without costing another standard action
+PASS Sunder replacement AoO can interrupt and then resume without double slot consumption
+PASS Grappled CMB does not double-count the attack penalty; grapple checks exempted
+PASS Player cannot decide Grab reaction for a different creature
+PASS Malformed rider data rejected at registration, rollback preserves state
+14 V3.12 rider tests passed
+
+
+scene_tests.mjs: PASS
+PASS map supports large setup, soft-lock resizing and pure inspection
+PASS invalid/shrinking map and partial batch failure leave state and checkpoints unchanged
+PASS active areas and tile elevation cannot silently be clipped
+PASS elevation annotations warn without granting actions, occupancy needs distinct declared layers
+PASS geometry declarations enforce ranged distance, reach and ordinary action budget
+PASS rulings invalidate when positions or terrain change and do not disable conditions
+PASS explicit threat ruling suppresses an incorrect flat-map AoO and movement still costs an action
+PASS same-square Tiny melee works, zero reach does not threaten adjacent squares
+PASS Tiny capacity is enforced without blocking occupancy of a larger creature
+PASS Tiny entry into an enemy square pauses for AoO and resumes the same movement
+PASS traversal exceptions cross a declared obstacle while paying declared cost; elevation changes invalidate them
+PASS surface automation skips flight, landing fires once, annotation edits do not retrigger damage
+PASS surface persistent areas exclude flight, include landing, and honor existing per-round exposure receipts
+PASS volume areas still affect fliers and explicit exclusion works on future exposures
+PASS scene closure preserves source-independent spell and ailment consequences, daily usage and world clock
+PASS scene closure clears fixed areas/history and rejects unsafe or invalid closure atomically
+PASS wall-top landing accepts new traversal ruling atomically and surface area modifiers reconcile
+PASS source departure preserves authored concentration tail and cannot grant a reused ID ownership
+PASS retained held touch charge survives scene transition without a second free attempt or stale targets
+PASS zero-reach defenders react to Tiny entry in their own square without moving the entrant early
+20 scene integration groups passed
+
+
+spell_conditions_tests.mjs: PASS
+PASS native condition-only payload, identity and clock
+PASS save outcomes govern ongoing bundles; negation always wins
+PASS failed SR blocks conditions before saves
+PASS native immunity and descriptor immunity use existing traits
+PASS overlapping spells keep independent sources without duplicate penalties
+PASS manual conditions cannot be stolen, refreshed or erased by spell ownership
+PASS stronger fear/fatigue preserves weaker sources; spell fatigue does not infer escalation
+PASS different conditions still combine penalties
+PASS dispel ends all linked recipient components, preserving other sources/recipients
+PASS caster initiative expiry and world-clock migration
+PASS non-dispellable conditions still expire normally
+PASS incapacitation interrupts an ongoing cast through the native hook
+PASS entry condition stops movement and ends with its region
+PASS same-round re-entry restores conditions without new saves or damage
+PASS re-entry cannot grant a previously immune part when another part qualified
+PASS area pulses do not duplicate/escalate fatigue; regions end independently
+PASS duration conditions survive exit/removal and then expire
+PASS persistent conditions survive summoned source departure and restore
+PASS held touch condition discharges during natural full attack; manual guards remain
+PASS ray misses do not apply conditions; repeated hits retain one source/deadline
+PASS pure inspection, state restore and undo retain native ownership
+PASS invalid bundles reject atomically before resources or RNG
+V3.32 spell conditions: 22 groups passed
+
+
+spell_delivery_tests.mjs: PASS
+PASS held charge is one indefinite Pending Event, with no duplicate state tracker
+PASS casting, moving into reach and delivering spends no second standard action
+PASS touch uses touch AC, not armor AC, and never adds weapon damage or Strength
+PASS a missed touch preserves its charge, but consumes the one free attempt
+PASS later-turn delivery uses a standard action while keeping the stored charge
+PASS a second natural 20 check cannot bypass range or a solid wall
+PASS concealment miss keeps the charge and uses the shared miss-chance resolver
+PASS a damaging touch critical repeats spell damage dice and its flat bonus
+PASS fortification negates touch criticals through the shared defense check
+PASS self-touch healing is automatic and does not roll a critical
+PASS GM-confirmed willing contact heals another creature without an attack roll
+PASS contact discharges even when SR or a saving throw defeats the spell
+PASS another casting dissipates the charge even if defensive concentration fails
+PASS invalid new spell requests do not cancel a charge or spend an action
+PASS held spell survives injuries, encounter end and time; old free touch is not retained
+PASS downtime expires the free touch and restores a usable action budget
+PASS GM application of a delayed spell effect does not pretend a new casting began
+PASS generic Pending Event cancellation and history also remove a held charge
+PASS unintended creature contact and object contact reuse Pending Event discharge
+PASS natural weapon contact adds the held spell without charging another action
+PASS a natural-weapon critical does not double a separately discharged spell
+PASS a weapon hit does not pretend the caster made physical contact
+PASS explicit multi-charge spells decrement the same event and cache SR per target
+PASS ray uses ranged touch statistics and applies only the spell payload
+PASS ray misses spend casting and cannot be held or retried
+PASS ray maximum range and solid-wall failures are atomic before casting
+PASS multiple rays roll independently and make one SR check per creature for the same casting
+PASS a simultaneous ray volley does not roll back when an earlier ray downs its target
+PASS separate rays mitigate their own damage separately
+PASS ray delivery provokes after defensive casting but costs no additional action
+PASS casting and ray delivery are two distinct opportunities with real per-creature budgets
+PASS one ray volley offers one delivery opportunity, not one per ray
+PASS delivery opportunity damage does not retroactively require casting concentration
+PASS a barrier introduced during the opportunity blocks rays without refunding the cast
+PASS incapacitating the caster at delivery prevents all rays
+PASS long touch casting can deliver as part of completion without spending the next turn
+PASS long ray casting holds the pre-turn checkpoint through the delivery opportunity
+PASS holding and ray-delivery suspension survive serialization and undo
+PASS a caster does not threaten while performing a long casting
+PASS continuing a long casting does not offer another casting AoO
+PASS spell precision shares one fortification roll and is not multiplied by a critical
+PASS concealment suppresses attached spell precision even on a successful hit
+PASS nauseated cannot turn a charged free touch or a move-action spell into an attack
+PASS ray delivery uses the same condition gate as pending ranged attacks
+PASS shared condition context lowers a prone target defense for melee touch delivery
+PASS the same condition context raises prone target defense against ray attacks
+PASS malformed deliveries cannot spend resources or install a held event
+V3.25 spell delivery: 47 groups passing
+
+
+spell_interaction_tests.mjs: PASS
+PASS ongoing spell index derives native effects with one casting identity per cast
+PASS basic dispel uses original caster level, removes one effect and its deadline
+PASS successful highest-level dispel leaves lower spells intact
+PASS a specific failed dispel does not fall through to another spell
+PASS multiple modifiers from one recipient and casting end together
+PASS dispel of one recipient preserves other recipients of the same casting
+PASS identically named overlapping casts retain separate identities and deadlines
+PASS self-dispel succeeds automatically with no RNG or retroactive damage healing
+PASS dispel ignores SR and AC, and rolls no saving throw
+PASS caster-level checks have no automatic natural 1 or 20 result
+PASS undispellable spells and generic modifiers are preserved
+PASS spell-like ongoing effects can be dispelled
+PASS an instantaneous-only target consumes the dispel without undoing its result
+PASS held charge dispels remove the native Pending Event and use its history
+PASS ray volleys and repeated touches keep their casting identity across payloads
+PASS greater targeted dispel uses one roll and a caster-level-based spell limit
+PASS invalid range, wall, visibility or specific target reject before costs and RNG
+PASS dispel casting still handles its normal opportunity and concentration failure
+PASS dispel target invalidated during casting spends its action with no effect
+PASS native Ready costs one standard action and stores no duplicate counter queue
+PASS matching counterspell identifies, negates before effects and uses Ready initiative
+PASS failed free identification preserves Ready, with no repeat for the same casting
+PASS a mismatched identified spell does not cancel the incoming casting
+PASS canonical identity handles metamagic and declared specific counter exceptions
+PASS dispel counter needs no registered Spellcraft or identification roll
+PASS a failed dispel counter allows the original spell to resolve
+PASS greater dispel receives its +4 counterspell bonus
+PASS declining retains Ready for a later casting but cannot repeat on the same cast
+PASS an unused Ready expires through existing next-turn lifecycle
+PASS counterspell decisions cannot be bypassed by the external-AoO confirmation
+PASS normal identification includes shared skill modifiers, distance and GM circumstances
+PASS counterspell target, perception and condition failures are atomic
+PASS counterspell casting reuses AoOs, concentration and the parent continuation
+PASS defensive counterspell failure preserves parent spell and consumes no active action
+PASS a new counterspell casting dissipates the countercaster’s held charge
+PASS a spell-like activation is dispellable afterward but cannot be counterspelled
+PASS counterspell cancels a long casting before it enters the ongoing registry
+PASS ordinary casts cannot execute a counterspell payload or trigger one by text
+PASS actor authority cannot adjudicate another caster’s reaction or GM bypass
+PASS invalid schemas and unregistered matching skill do not consume Ready resources
+PASS malformed native Ready payload and generic event spoofing reject atomically
+PASS a counterspell can itself be counterspelled through the same casting continuation
+PASS counterspell invalidated during its own AoO cannot retroactively regain the reaction
+PASS unexpected counterspell errors restore initiative, RNG and the Ready record
+PASS counterspell waiting through its AoO survives state reconstruction
+PASS world-clock dispel has no separate countdown and stays removed after Fast Forward
+PASS undo and state reconstruction retain dispel identities and remove no other timers
+V3.26 spell interactions: 47 groups passing
+
+
+spell_resources_tests.mjs: PASS
+PASS bonus slots match the core table across successive ability modifier bands
+PASS missing or null levels stay inaccessible; zero base slots can gain bonus slots
+PASS imported totals remain authoritative and cannot be combined with bonus calculations
+PASS derived daily allotment stores its explicit score and visible base/bonus breakdown
+PASS live ability buffs, damage, drain and their removal never change slots or refill uses
+PASS refresh uses stored allotments even after the underlying ability score changes
+PASS daily recalculation requires explicit replacement and never happens during inspection
+PASS prepared casting consumes its exact copy and leaves other copies ready
+PASS spontaneous casting uses a shared level pool and blocks further casts at exhaustion
+PASS spontaneous upcasting spends only the explicitly selected higher-level slot
+PASS prepared lower-level spells may occupy higher slots but cannot move at cast time
+PASS catalogue slot costs are independent of effective spell level for metamagic variants
+PASS cantrips are reusable while still requiring prepared or known access
+PASS zero-level spells in higher slots and explicitly finite cantrip policies expend slots
+PASS restricted pools cannot be spent on unrelated spells
+PASS declared prepared conversions consume the original preparation and respect pool limits
+PASS configured actors cannot bypass resources through missing selectors or spoofed identities
+PASS caster books and multiclass pools remain separate
+PASS book ability determines concentration and low current scores block casting without altering allotments
+PASS failed defensive casting expends its slot once
+PASS casting AoOs and injury failure never refund or double-spend the slot
+PASS long casting pays only on initiation, not continuation or completion
+PASS held touch delivery and ray volleys use the single casting payment
+PASS invalid payload, impossible range or unavailable action rolls back resources atomically
+PASS GM effect-only resolution remains an explicit no-resource override
+PASS Readying, declining and failed identification do not expend or reserve a slot
+PASS successful or failed counterspell casting spends the countercaster’s resource only
+PASS a slot used after Ready declaration is unavailable at the actual counterspell trigger
+PASS explicit restoration cannot exceed spent uses or silently change totals
+PASS open slots can be filled but spent preparations still occupy daily capacity
+PASS refresh can replace daily preparations explicitly and rolls back an invalid replacement
+PASS time, encounter transitions and midnight never refresh resources automatically
+PASS GM updates require authority and reasons, and cannot replace a casting’s live resources
+PASS at-will SLA access must be registered; changing sourceKind cannot fake free casting
+PASS state reconstruction and undo preserve both frozen totals and expended slots
+PASS restricted extra pools cannot accidentally apply a second ability bonus table
+PASS unsupported/ambiguous allotments and over-preparation reject atomically
+V3.27 spell resources: 37 groups passing
+
+
+stat_vocabulary_v3_5_tests.mjs: PASS
+PASS Printed AC variants remain separate and visible in controller inspection
+PASS Cannot import a printed AC without touch and flat-footed totals
+PASS Dexterity changes propagate only through declared printed-total links
+PASS Max Dex cap is respected for imported AC links
+PASS Damage-roll style targeting of touch AC requires GM authority
+PASS GM cannot target an invented defensive statistic
+PASS Generic modifier can affect all three AC variants together
+PASS Skill snapshots inherit ability deltas, group penalties and skill-specific modifiers
+PASS Unspecified unusual skill dependency may be explicitly overridden
+PASS Ad hoc 1d6 falling damage and healing obey HP bounds
+PASS GM dice-only rolls consume seeded RNG without affecting hit points
+PASS Creature controller cannot manufacture free damage, healing or modifiers
+PASS Bad GM roll and modifier reject atomically without consuming test die
+PASS Modified creature state survives save/reload and undo restores baseline
+14 V3.5 statistic/adjudication tests passed
+
+
+summon_tests.mjs: PASS
+PASS marker preserves creature stats, type and defensive subtypes; one native timer
+PASS Fast Forward removes exactly at expiry without a narrative confirmation
+PASS time-to-next-event stops at summon expiry and calendar edits do not extend it
+PASS ordinary conditional events retain their existing Fast Forward warning
+PASS spawn accepts per-instance summon setup and subtype imports demand a timer
+PASS invalid, repeated, unauthorized and malformed setup is atomic
+PASS generic trigger is blocked; cancellation dismisses instead of making immortal
+PASS initiative expires at the summoner count, including an empty count
+PASS ending initiative migrates the same timer to downtime
+PASS lethal damage, damage packets and explicit dead condition remove; ordinary down creatures stay
+PASS nonlethal unconsciousness does not dismiss a living summon
+PASS removing active summon advances turn without giving another actor duplicate actions
+PASS last summon can depart; inspect, clock and new spawning remain usable
+PASS summoner disappearance does not cancel someone else’s summon
+PASS native spell effects cast by departing summon expire and unlink deadlines
+PASS grapples, conditions, ready events, held charges and ailments leave no orphan
+PASS summon defeat during a melee hit lets the living full attacker retarget
+PASS a lost summoning actor cannot leave a suspended casting or its resources behind
+PASS saving and reconstruction preserve the same countdown; undo restores dismissal
+PASS defeat during a movement AoO finishes the reaction and removes the mover
+PASS last ranked participant departure migrates timers when an unranked creature remains
+PASS simultaneous narrative decision does not postpone automatic expiry
+PASS expiry before a summon turn suppresses its automatic turn-start action
+PASS automatic duplicates inherit exact summon expiry instead of becoming permanent
+V3.28 summons: 24 groups passed
+
+
+tests.mjs: PASS
+PASS ability modifier floors odd negative score
+PASS highest typed bonus, all dodge, untyped different sources
+PASS typed penalties take worst; untyped penalties stack
+PASS Strength enhancement cascades to attack, damage, CMB
+PASS Aura -2 to attack, AC, all saves and remove on hit source
+PASS Medium creature entering reach does not provoke
+PASS Leaving threatened square interrupts BEFORE movement
+PASS 5-foot step does not provoke even from threatened square
+PASS No 5-ft step after normal move
+PASS Large creature cannot move into occupied small creature
+PASS Damage and check outcomes reproducible after undo
+PASS AoO can reduce mover to zero before entering next square
+PASS Consecutive squares threatened generate a single move opportunity per foe
+PASS Round rewind restores positions, HP, effects, and seed
+PASS A completed turn can be rewound at start of next actor turn
+PASS Illegal effect operations are rejected
+
+16 passing tests
+PASS: invalid commands are atomic and role-gated
+
+
+time_engine_tests.mjs: PASS
+PASS game clock starts at Day 1 00:00:00; elapsed time advances without combat turns or activity
+PASS GM sets an in-world clock display without triggering mechanical time
+PASS GM events schedule without character tactics, stop before continuing, and require an explicit GM resolution
+PASS Advance to next event handles noninteractive and interactive scheduled events
+PASS Ailment ticks and cure checks occur at exact deadlines rather than only at end
+PASS Timed effects expire in chronological order, including conditions, before later saves
+PASS Temporary HP expiration uses its own one-hour deadline even across multiple days
+PASS Multiple same-time events are retained and each can require GM input
+PASS Broken input and too many scheduled events roll back state atomically
+PASS Advancing elapsed time does not imply rest or natural healing
+PASS Existing undo snapshots can revert the clock after a downtime command
+11 time engine tests passed
+
+
+transport_tests.mjs: PASS
+PASS official SDK stdio discovery, references, mutation and durable retry after restart
+PASS HTTP official SDK handshake, tool calls, auth/host/origin boundaries and concurrency
+PASS non-loopback or configured external hosts cannot start without private authentication
+3 transport groups passed
+
+
+vocabulary_probe_tests.mjs: PASS
+PASS Aura rule adds modifiers as DATA, no aura-specific engine routine
+PASS Aura ends on specifically affected creature hitting its own archon
+PASS Other failed save does not trigger the aura
+PASS Pudding: slashing cancels damage and clones at half original HP
+PASS Pudding: unlisted damage type does not split
+PASS Pudding: at or below 10 HP does not split
+PASS Contingent action offers an interrupt once, and may be declined
+PASS Invalid operation leaves no partially changed state
+8 passing vocabulary-probe tests
+
+
+wall_geometry_tests.mjs: PASS
+PASS solid tile blocks attacks even with sufficient reach, without spending action
+PASS attack along clear lane remains legal; this is not total-cover everywhere
+PASS GM can explicitly authorize exceptional attack through wall
+PASS corporeal creatures cannot enter wall or force wall
+PASS incorporeal creature traverses thin wall using an explicitly ordered path
+PASS incorporeal creature is blocked by a force wall
+PASS incorporeal creature cannot phase through solid mass thicker than its space without adjudication
+PASS incorporeal attacker inside a thin wall can strike an adjacent exterior target with 50% miss chance
+PASS incorporeal reach does not bypass a second solid wall
+PASS solid wall prevents AoO opportunities through it
+PASS GM tile editing updates geometry and is not available to creature controller
+11 wall/movement tests passed
+
+
+weapon_quality_tests.mjs: PASS
+PASS improvised weapon has the default -4 and 20/x2 descriptive crit
+PASS proficiency exceptions suppress improvised -4
+PASS broken is separate from kind and can combine with improvised
+PASS alchemical silver automatically bypasses DR/silver, penalizes cutting damage once
+PASS alchemical silver does not penalize bludgeoning-only weapons
+PASS mithral counts as silver, cold iron and adamantine bypass matching DR
+PASS material properties combine with inherited alignment DR bypass
+PASS explicit packet metadata can bypass material DR
+PASS registered definitions preserve material and condition per attack
+PASS materials and conditions are discoverable in central rules library
+PASS material input validation rejects unsupported invented rules
+V3.9.1 weapon quality checks passed
+
+
+40/40 suites passed
+
+test_browser_v3_10.py: PASS
+Browser V3.10 PASS: creature import, maneuver AoO pause, grapple, release and state cleanup
+
+
+test_browser_v3_11.py: PASS
+Browser V3.11 PASS: Dirty Trick/removal, Overrun avoid, and audited free movement with AoO
+
+
+test_browser_v3_12.py: PASS
+Browser V3.12 PASS: Grab/Constrict choices, appendage hold, and full-attack Trip replacement
+
+
+test_browser_v3_13.py: PASS
+Browser V3.13 PASS: profile inspection, critical confirmation, worn fortification, precision toggle
+
+
+test_browser_v3_14.py: PASS
+Browser V3.14 PASS: example import, optional Trip UI, automatic Bleed/Poison/Paralysis
+
+
+test_browser_v3_15.py: PASS
+Browser V3.15 PASS: import, inspector, Pull choice, Push choice, Energy Drain negative levels
+
+
+test_browser_v3_16.py: PASS
+Browser V3.16 PASS: armor/DR inspector, shield removal, broken plate, cover and miss chance
+
+
+test_browser_v3_16_1.py: PASS
+Browser V3.16.1 PASS: GM wall editing, corporeal obstruction, AI-authored incorporeal path
+
+
+test_browser_v3_17.py: PASS
+Browser V3.17 PASS: set campaign clock, schedule GM event, stop at event, acknowledge, resume 24-hour skip
+
+
+test_browser_v3_18.py: PASS
+Browser V3.18 PASS: import attack examples, inspect ranged and scaled dice, apply/heal nonlethal
+
+
+test_browser_v3_19.py: PASS
+Browser V3.19 PASS: TWF/natural and crossbow imports, attack plan preview, shot, reload, GM ammo correction
+
+
+test_browser_v3_2.py: PASS
+BROWSER PASS Explorer approaches, Choker AoO, attacks, Choker move pauses for Explorer AoO, movement resumes, second move works
+BROWSER PASS Five-foot step prevents later movement and gives an explanatory error
+BROWSER PASS no JavaScript runtime errors
+
+
+test_browser_v3_20.py: PASS
+Browser V3.20 PASS: initiative manual roll, GM edit, initiative deadline, round clock and safe Fast Forward
+
+
+test_browser_v3_21.py: PASS
+Browser V3.21 PASS: Ready action, expiration, timer checkpoint, warning, GM resolution and resume
+
+
+test_browser_v3_22.py: PASS
+Browser V3.22 PASS: area preview, cone overlay, JSON casting, action cost, clear overlay
+
+
+test_browser_v3_23.py: PASS
+Browser V3.23 PASS: combined lifecycle view and initiative deadline visibility
+
+
+test_browser_v3_24.py: PASS
+PASS browser: 1-round casting completes before normal actions
+PASS browser: continuation, cancellation and deferred turn resumption
+PASS browser: Fast Forward stops at casting completion and exposes lifecycle state
+PASS browser: provoking cast, per-creature AoO choice and confirmed resumption; no page errors
+
+
+test_browser_v3_25.py: PASS
+PASS browser: touch charge uses Pending Events and self-delivery is free
+PASS browser: missed charge persists and later touch costs one standard action
+PASS browser: a ray volley rolls each ray and applies no weapon damage
+PASS browser: defensive casting still exposes the ray-delivery opportunity
+PASS browser: long-cast ray completes before normal turn actions after its opportunity
+V3.25 browser: 5 scenarios passed; no page errors
+
+
+test_browser_v3_26.py: PASS
+PASS browser: matching counter uses Ready, initiative and casting continuation
+PASS browser: failed dispel counter allows original effect with no Spellcraft roll
+PASS browser: declined Ready expires on the normal next-turn deadline
+PASS browser: targeted dispel removes one spell and its timer, preserving overlap
+PASS browser: specific effect chooser preserves another recipient of the same spell
+V3.26 browser: 5 scenarios passed; no page errors
+
+
+test_browser_v3_27.py: PASS
+PASS browser: daily base-plus-bonus breakdown and exact prepared expenditure
+PASS browser: ability buff, damage, drain and removal never change totals or refill a slot
+PASS browser: spontaneous imported totals and explicit restore/refresh preserve fixed maximums
+PASS browser: recalculating daily totals requires explicit allotment replacement
+PASS browser: exhaustion blocks casting atomically and elapsed days do not refill slots
+PASS browser: Ready copies its resource selector and spends the countercaster’s slot at reaction time
+V3.27 browser: 6 scenarios passed; no page errors
+
+
+test_browser_v3_28.py: PASS
+PASS browser: spawn marker, native timer, expiry and token removal
+PASS browser: mark existing creature, dismiss last token, recover by spawning
+PASS browser: defeat removes token, timer and selection entries
+PASS browser: combat rounds advance the same timer and clean initiative
+V3.28 browser: 4 scenarios passed; no page errors
+
+
+test_browser_v3_29.py: PASS
+PASS browser: world-time checkpoint, pure inspection, blocked action, single resumed start
+PASS browser: initiative checkpoint leaves controller and lifecycle views usable
+V3.29 browser: 2 integration scenarios passed; no page errors
+
+
+test_browser_v3_3.py: PASS
+Browser V3.3 pass: Choker 2 strikes, interleaved step, Quickness move after full attack, no JS errors.
+
+
+test_browser_v3_30.py: PASS
+PASS browser: normal cast, grid footprint, native countdown and expiry before repeat
+PASS browser: Time & Events removal clears inside-only modifiers
+PASS browser: area targeting uses the existing dispel controls
+V3.30 browser: 3 integration scenarios passed; no page errors
+
+
+test_browser_v3_31.py: PASS
+PASS browser: negative HP, visible status, stabilization, configured recovery
+PASS browser: immediate action, shared cooldown display and automatic readiness
+PASS browser: material estimate, object creation, map token and repair
+PASS browser: reasoned Free Mode health adjustment
+V3.31 browser: 4 scenarios passed; no page errors
+
+
+test_browser_v3_32.py: PASS
+PASS browser: condition editor, native effects, grouped dispelling
+PASS browser: successful negating save and clearing the condition bundle
+PASS browser: descriptor immunity is visible in the spell result
+V3.32 browser: 3 scenarios passed; no page errors
+
+
+test_browser_v3_33.py: PASS
+PASS browser: standard-action maintenance, native timer, voluntary stop and lingering expiry
+PASS browser: explicit downtime maintenance and advance to maximum deadline
+PASS browser: GM distraction uses shared concentration check and linked cleanup
+V3.33 browser: 3 scenarios passed; no page errors
+
+
+test_browser_v3_34.py: PASS
+PASS browser: large map dimensions, advisory soft lock and bounded panning
+PASS browser: elevation warnings and selectable shared-square occupants
+PASS browser: closure preview, empty-scene recovery and malformed JSON handling
+PASS browser: lingering concentration from a departed caster remains inspectable
+V3.35 browser: 4 scenarios passed; no page errors
+
+
+test_browser_v3_35.py: PASS
+PASS browser: stair preset and up/down elevation update
+PASS browser: cell-region feature display
+PASS browser: door controls and barrier overlay
+PASS browser: invalid feature edits preserve previous map
+V3.35 browser: 4 scenarios passed; no page errors
+
+
+test_browser_v3_36.py: PASS
+PASS browser: fall preview is pure
+PASS browser: mixed damage and landing commit together
+PASS browser: diving uses depth/check and explicit contact
+PASS browser: invalid fall preserves state; no page errors
+
+
+test_browser_v3_38.py: PASS
+PASS browser: dice-only button rolls without target effects or action expenditure
+PASS browser: bundled Prone exception and rejection use corrected shared logic
+
+
+test_browser_v3_4.py: PASS
+Browser V3.4 pass: registration, spawn, Shaken, refresh, expiry, checks, legacy Choker.
+
+
+test_browser_v3_5.py: PASS
+Browser V3.5 PASS: workbench, AC variants, damage/healing, modifiers, touch attack, Choker gallery.
+
+
+test_browser_v3_5_1.py: PASS
+Browser V3.5.1 PASS: charge attack, AC duration, standard-action move, double move.
+
+
+test_browser_v3_6.py: PASS
+Browser V3.6 PASS: conditions, modifiers, ailment exposure, saves, cure, persistent damage.
+
+
+test_browser_v3_6_1.py: PASS
+Browser V3.6.1 PASS: damage, drain, healing/restoration, ailment ability drain, stat recalculation.
+
+
+test_browser_v3_7.py: PASS
+Browser V3.7 PASS: register/spawn Devil; fire immunity, acid resistance, DC, poison descriptor.
+
+
+test_browser_v3_8.py: PASS
+Browser V3.8 PASS: dynamic vocabulary, ordinary unholy, environmental Hellfire and divine split.
+
+
+test_browser_v3_9.py: PASS
+Browser V3.9 PASS: imported bite attack + Grab are inspectable and clearly marked partial.
+
+
+test_browser_v3_9_1.py: PASS
+Browser V3.9.1 PASS: broken, improvised, alchemical silver, mithral, adamantine inspector
+
+
+Additional compatibility check: PASS actual V3.37 adapter snapshot opened in V3.38 with native state, checkpoints and retry receipts unchanged.

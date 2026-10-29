@@ -1,0 +1,27 @@
+test_401_keeps_map_redacts_and_recovers (__main__.Tests.test_401_keeps_map_redacts_and_recovers) ... ok
+test_artwork_browser_target_is_fixed_local_route (__main__.Tests.test_artwork_browser_target_is_fixed_local_route) ... ok
+test_busy_port_does_not_kill_unrelated_server (__main__.Tests.test_busy_port_does_not_kill_unrelated_server) ... ok
+test_download_checksum_failure_discards_archive (__main__.Tests.test_download_checksum_failure_discards_archive) ... Downloading download-source
+ok
+test_duplicate_writer_does_not_stop_first (__main__.Tests.test_duplicate_writer_does_not_stop_first) ... ok
+test_guard_terminates_child_when_parent_dies (__main__.Tests.test_guard_terminates_child_when_parent_dies) ... ok
+test_installer_preserves_save_and_migrates_only_nonsecret_settings (__main__.Tests.test_installer_preserves_save_and_migrates_only_nonsecret_settings) ... Windows integration unavailable. Ubuntu application entry was created.
+Installed Pathfinder Assistant. Your encounter save was not modified.
+Open Pathfinder Assistant from the Windows Start menu (it may appear under Ubuntu).
+Windows integration unavailable. Ubuntu application entry was created.
+Installed Pathfinder Assistant. Your encounter save was not modified.
+Open Pathfinder Assistant from the Windows Start menu (it may appear under Ubuntu).
+ok
+test_instance_lock_releases_without_stale_pid_rules (__main__.Tests.test_instance_lock_releases_without_stale_pid_rules) ... ok
+test_log_flood_does_not_lose_completion_or_grow_unbounded (__main__.Tests.test_log_flood_does_not_lose_completion_or_grow_unbounded) ... ok
+test_malformed_save_is_preserved (__main__.Tests.test_malformed_save_is_preserved) ... ok
+test_player_collision_prevents_start (__main__.Tests.test_player_collision_prevents_start) ... ok
+test_real_engine_restart_reconnect_save_and_env (__main__.Tests.test_real_engine_restart_reconnect_save_and_env) ... ok
+test_real_validation_rejects_wrong_inputs (__main__.Tests.test_real_validation_rejects_wrong_inputs) ... ok
+test_settings_exclude_secrets_atomic_mode (__main__.Tests.test_settings_exclude_secrets_atomic_mode) ... ok
+test_unexpected_calculator_exit_stops_tunnel (__main__.Tests.test_unexpected_calculator_exit_stops_tunnel) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 4.096s
+
+OK

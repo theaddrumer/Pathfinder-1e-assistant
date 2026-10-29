@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tabletop Kernel V3.47 — Mechanics Workbench</title>
+<style>
+:root{color-scheme:dark;--bg:#0d171c;--panel:#19272f;--line:#36505a;--ink:#edf1ef;--muted:#b0c0c3;--gold:#e1bd83;--teal:#79c8bc}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#1f3a40,#0d171c 55%);color:var(--ink);font:14px/1.5 system-ui,sans-serif;min-height:100vh}
+header{max-width:1320px;padding:22px 26px 8px;margin:auto}h1{font:normal 35px/1.1 Georgia,serif;margin:0}header p{color:var(--muted);margin:5px 0 10px}
+main{display:grid;grid-template-columns:minmax(490px,1.5fr) minmax(280px,1fr);gap:16px;max-width:1320px;margin:auto;padding:10px 26px 22px}.pane{display:grid;align-content:start;gap:13px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:16px}h2{font-size:12px;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin:0 0 10px}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px}button,select,input,textarea{font:inherit;border-radius:7px;padding:8px 10px;background:#2a4149;border:1px solid #4b6b73;color:var(--ink);cursor:pointer}button:hover:not(:disabled){background:#35525b;border-color:var(--gold)}button:disabled{opacity:.42;cursor:not-allowed}.gold{background:#9b7545;border-color:#c79d60;color:#fff}.subtle{color:var(--muted);font-size:12px}.status{background:#2b4a49;padding:10px;border-radius:7px;margin:10px 0}.status.error{background:#663b36}strong{color:#fff}
+.board{position:relative;width:100%;max-width:650px;aspect-ratio:10/8;margin:0 auto;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));grid-template-rows:repeat(8,minmax(0,1fr));gap:2px;min-height:0}.tile.persistent-area{background:#305b50;box-shadow:inset 0 0 0 2px #79c8bc}.tile.magic-preview{outline:3px solid #e1bd83;outline-offset:-4px;background:rgba(225,189,131,.22)}.tile{background:#22383b;border:1px solid #355257;border-radius:3px;min-width:0;min-height:0;aspect-ratio:1;display:grid;place-items:center;padding:0;position:relative}.stack-count{position:absolute;right:1px;top:1px;background:#122326;color:white;border-radius:3px;padding:0 3px;font-size:10px;z-index:2}.tile.wall{background:#3c4b54;box-shadow:inset 0 0 0 2px #71818b}.tile.force-wall{background:repeating-linear-gradient(45deg,#54466a,#54466a 7px,#8e6aa9 7px,#8e6aa9 13px)}.tile.zone{background:#30484b}.tile.hazard{background:repeating-linear-gradient(135deg,#7f3f2d,#7f3f2d 8px,#a35b2d 8px,#a35b2d 16px)}.tile:hover{outline:2px solid var(--gold);outline-offset:-2px}.tile:nth-child(even){filter:brightness(1.05)}.tile.threatened{box-shadow:inset 0 0 0 2px #d66d68}.tile.acting{outline:2px solid #e1bd83;outline-offset:-2px}.unit.acting-unit{border-color:#e1bd83;background:#2d3c40}.controls button.on{border-color:#e1bd83;background:#5a5140}.token{width:75%;aspect-ratio:1;border-radius:50%;background:#356b75;border:2px solid #a6e0e2;display:grid;place-items:center;font:bold 18px Georgia,serif;z-index:1}.token.object{border-radius:5px;background:#666e74;border-color:#c4cbd0}.token.downed{opacity:.65;border-style:dashed}.token.foe{background:#955e50;border-color:#e9b8a7}.bodypiece{width:70%;height:70%;background:#80514582;border:1px dashed #bb8b7c;border-radius:5px}
+#board-label{color:var(--muted);font-size:12px;margin-top:9px}.stats{display:grid;gap:7px}.unit{border:1px solid #39515a;background:#22343d;padding:10px;border-radius:8px}.unit-header{display:flex;justify-content:space-between;gap:10px}.unit-header span{color:var(--muted);font-size:12px}.unit-info{font-size:12px;margin-top:4px}.effect{display:inline-block;background:#604c37;color:#ffdbab;margin:5px 4px 0 0;padding:2px 6px;border-radius:4px;font-size:11px}.log{max-height:330px;overflow:auto}.log p{font-size:12px;border-bottom:1px solid #344a52;margin:0;padding:7px 0}pre{font-size:11px;line-height:1.45;color:#bcd7d3;background:#0c1d23;border-radius:8px;white-space:pre-wrap;overflow:auto;max-height:290px;padding:10px;word-break:break-word}.warning{color:#e9ba91;font-size:13px}#interrupt-box{border:2px solid #d9a66c;background:#513a2f;padding:12px;margin:12px 0;border-radius:7px}#interrupt-box p{font-size:14px;margin:4px 0 12px}#interrupt-box button{border-color:#e1bd83;background:#715039}#interrupt-box button:hover{background:#805b41}
+footer{max-width:1320px;padding:0 26px 24px;margin:auto;color:var(--muted);font-size:12px}
+@media(max-width:850px){main{grid-template-columns:1fr}.board{max-width:650px}}@media(max-width:570px){header{padding:18px 12px}h1{font-size:29px}main{padding:8px 10px}.card{padding:12px}.board{min-width:0}}
+textarea{width:100%;resize:vertical;font:12px/1.45 ui-monospace,SFMono-Regular,monospace;min-height:100px}
+input{width:85px}.wide{min-width:160px}.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:750px){.import-grid{grid-template-columns:1fr}}
+.map-feature-overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;overflow:hidden}.tile.map-feature{box-shadow:inset 0 0 0 2px #b89c72}.feature-label{position:absolute;left:1px;bottom:0;color:#f4d7a1;font-size:9px;max-width:95%;overflow:hidden;white-space:nowrap;pointer-events:none}
+</style></head>
+<body>
+<header><h1>Tabletop Kernel <span style="color:var(--teal)">V3.47</span></h1><p>Creature traits, defense resolution, calculated DCs, conditions and ailments &amp; GM adjudication · standalone sandbox — separate from the MCP server encounter</p></header>
+<main>
+<section class="pane">
+<div class="card">
+<h2>Encounter setup</h2>
+<div class="controls"><label for="scenario">Test fixture</label><select id="scenario"><option value="archon">Archon — Aura of Menace</option><option value="pudding">Black Pudding — Split</option><option value="vienna">Vienna — Alien Presence</option><option value="choker">Choker — Quickness</option><option value="registry" selected>V3.6.1 — Import creature &amp; shaken</option></select><button id="reset">Reset fixture</button><button id="activate" class="gold">Activate automatic effects</button></div>
+<div id="notice" class="status">Choose a fixture and activate automatic effects.</div>
+<p class="subtle" id="scenario-explainer"></p>
+</div>
+<div class="card" id="map-panel">
+<h2>Map &amp; scene management</h2>
+<div class="controls"><label>Width <input id="map-width" type="number" min="1" max="256" value="10"></label><label>Height <input id="map-height" type="number" min="1" max="256" value="8"></label><label>Reason <input id="map-reason" class="wide" value="Set encounter map dimensions"></label><button id="map-resize">Set dimensions</button><button id="map-establish">Establish scene</button><button id="map-inspect">Inspect map</button></div>
+<div class="controls"><label>Saved map ID <input id="map-save-id" value="map_1" maxlength="64"></label><label>Name <input id="map-save-name" value="Encounter map" maxlength="120"></label><button id="map-save">Save map</button><button id="map-list">List saved maps</button><button id="map-load">Load saved map</button><button id="map-delete">Delete saved map</button></div>
+<div class="controls"><label>Retain creature IDs (comma-separated; blank clears all characters) <input id="map-keep" class="wide" value=""></label><button id="map-clear-preview">Preview encounter cleanup</button><button id="map-clear">Clear encounter, keep map</button></div>
+<p class="subtle">These controls use this offline workbench's state, not the live MCP encounter. Map bookmarks are included in full-state Export/Import; download that export before closing this sandbox. Live MCP maps save automatically. Objects remain during cleanup; retained characters keep HP/resources and ongoing effects. Load requires an empty encounter.</p>
+<p class="subtle">5-foot squares. Established scenes warn on resizing; tokens, terrain and active areas cannot be clipped. Elevation uses GM rulings, not automatic 3-D physics.</p>
+<div class="controls"><label>View X <input id="map-view-x" type="number" min="0" value="0"></label><label>View Y <input id="map-view-y" type="number" min="0" value="0"></label><button id="map-view">Show map window</button><label>Shared-square click target <select id="map-stack-target"><option value="">First occupant</option></select></label></div>
+<p class="subtle" id="map-window-label"></p>
+<details><summary>Map features, elevation, exposure and scene commands (GM JSON)</summary>
+<div class="controls"><label>Feature preset <select id="map-feature-preset"></select></label><label>Direction <select id="map-feature-direction"></select></label><button id="map-feature-example">Load example</button></div>
+<p class="subtle">N is up, E is right. Edit example coordinates before applying. Stairs examples declare a 5-foot rise across one boundary; reversing subtracts it. Bars and slits need explicit effect-passage rulings.</p>
+<div class="controls"><label>Door <select id="map-door"></select></label><button id="map-door-open">Set open</button><button id="map-door-close">Set closed</button></div>
+<textarea id="map-command" spellcheck="false">{"op":"gm_set_elevation","target":"hero","elevation":{"feet":20,"grounded":false,"layer":"air","note":"Flying above the floor"},"reason":"GM declares current height"}</textarea>
+<div class="controls"><button id="map-command-run">Apply GM scene command</button><button id="map-close-preview">Preview scene closure</button></div>
+<p class="warning">Closing a scene discards unretained creatures, terrain, fixed areas and encounter undo/history. Supply an explicit keep list and placements; preview first. Retained HP, resources, ailments and world time persist. Archive campaign history externally if needed.</p>
+</details><details id="fall-panel"><summary>Resolve a fall (GM)</summary>
+<p class="subtle">Resolve reactions first. Preview does not roll or change state. Ordinary elevation changes never cause fall damage automatically.</p>
+<div class="controls"><label>Creature <select id="fall-target"></select></label><label>Distance (ft) <input id="fall-distance" type="number" min="0" max="100000" value="30"></label><label><input id="fall-deliberate" type="checkbox"> Deliberate jump/dive</label><label>Surface <select id="fall-surface"><option value="hard">Hard</option><option value="yielding">Yielding</option><option value="water">Water</option></select></label><label>Water depth (ft) <input id="fall-depth" type="number" min="0" value="10"></label></div>
+<div class="controls"><label>Completed Acrobatics / dive check total (optional) <input id="fall-check" type="number" placeholder="No check"></label><label>Special distance reduction (ft) <input id="fall-reduction" type="number" min="0" value="0"></label><label>Landing height (ft; blank leaves elevation unchanged) <input id="fall-height" type="number" placeholder="Unchanged"></label><label>Landing layer <input id="fall-layer" value="ground"></label><label><input id="fall-grounded" type="checkbox" checked> Surface contact on landing</label></div>
+<div class="controls"><label>Reason <input id="fall-reason" class="wide" value="GM declares completed fall"></label><button id="fall-preview">Preview fall</button><button id="fall-resolve">Resolve fall</button></div>
+<p class="subtle">A check total includes all modifiers; use the existing roll tools first if needed. Water uses the dive total. Set contact/layer for the actual landing; water does not automatically mean standing on the bottom. Special damage or prone overrides use gm_resolve_fall in the scene JSON editor.</p>
+<pre id="fall-result">No fall previewed.</pre></details>
+<details><summary>Player visibility &amp; GM layer</summary>
+<p class="subtle">These controls edit this offline sandbox. The live server's player page uses the MCP encounter. New creatures/features start on the GM layer. Reveals never grant sight or change combat rules.</p>
+<div class="controls"><label>X <input id="pv-x" type="number" min="0" value="0"></label><label>Y <input id="pv-y" type="number" min="0" value="0"></label><label>Width <input id="pv-w" type="number" min="1" value="4"></label><label>Height <input id="pv-h" type="number" min="1" value="4"></label><button id="pv-reveal">Reveal region</button><button id="pv-hide">Hide region</button></div>
+<div class="controls"><label>Kind <select id="pv-kind"><option value="creature">Creature</option><option value="feature">Feature</option></select></label><label>ID <input id="pv-id" value="hero"></label><label>Public label <input id="pv-label" value="Explorer" maxlength="80"></label><label>Color <input id="pv-color" type="color" value="#75c6bf"></label><button id="pv-show">Move to map layer</button><button id="pv-gm">Move to GM layer</button><button id="pv-preview">Inspect player data</button></div>
+</details>
+<pre id="map-state">Map dimensions and elevation warnings appear here.</pre>
+</div>
+<div class="card" id="registry-panel" hidden>
+<h2>Creature &amp; effect definitions (GM JSON)</h2>
+<p class="subtle">These example definitions are editable. A creature or condition is registered ONCE and can be instantiated/applied repeatedly. No source-code changes or web lookups are required.</p>
+<div class="import-grid">
+<div><label for="creature-json"><strong>Creature definition (JSON)</strong></label><textarea id="creature-json" rows="14"></textarea><div class="controls"><button id="register-creature">Register creature</button></div>
+<div class="controls"><label>Instance ID <input id="spawn-id" class="wide" value="raider_1"/></label><label>X <input id="spawn-x" type="number" value="3" min="0" max="9"/></label><label>Y <input id="spawn-y" type="number" value="4" min="0" max="7"/></label></div><button id="spawn-creature">Spawn instance from definition</button></div>
+<div><label for="effect-json"><strong>Reusable effect (JSON)</strong></label><textarea id="effect-json" rows="14"></textarea><div class="controls"><button id="register-effect">Register effect</button></div>
+<div class="controls"><label>Target <select id="effect-target"></select></label><label>Duration <input id="effect-rounds" type="number" min="1" value="2"/></label></div><div class="controls"><button id="apply-effect">Apply / refresh effect</button><button id="roll-skill">GM: Perception check DC 15</button></div></div>
+</div>
+<p class="subtle">The AI would send these exact structured commands. For this demonstration, you provide the JSON manually. Skill checks, saves, penalties and expiry are calculated by the engine.</p>
+<h3>Summon</h3>
+<p class="subtle">Add a timed Summon marker while keeping the creature’s existing type and defenses. Expiry or defeat removes it from the map and initiative. Timers also appear in Time &amp; Events.</p>
+<div class="controls"><label><input id="spawn-summon" type="checkbox"> Spawn as Summon</label><label>Duration <input id="summon-count" type="number" min="1" value="5"></label><label>Unit <select id="summon-unit"><option value="round">Rounds</option><option value="minute">Minutes</option><option value="hour">Hours</option><option value="day">Days</option></select></label><label>Summoner <select id="summon-source"></select></label></div>
+<div class="controls"><label>Existing creature <select id="summon-target"></select></label><label>GM reason <input id="summon-reason" class="wide" value="GM confirms summoning duration"></label><button id="summon-mark">Apply Summon marker</button><button id="summon-dismiss">Dismiss Summon</button></div>
+<pre id="summon-state"></pre>
+<details id="object-controls"><summary>Objects and material estimates</summary>
+<p class="subtle">Create an inanimate map token or a separately tracked section. Published HP and hardness override the material estimate. Terrain changes after destruction are GM decisions.</p>
+<div class="controls"><label>ID <input id="object-id" value="stone_panel"></label><label>Name <input class="wide" id="object-name" value="Stone panel"></label><label>X <input id="object-x" type="number" value="2"></label><label>Y <input id="object-y" type="number" value="1"></label><label>Footprint squares <input id="object-size" type="number" min="1" max="6" value="1"></label></div>
+<div class="controls"><label>Material <select id="object-material"></select></label><label>Thickness (inches) <input id="object-thickness" type="number" min="0.01" step="0.1" value="1"></label><label>Size <select id="object-category"></select></label><label>HP override <input id="object-hp" type="number" min="1" placeholder="estimate"></label><label>Hardness override <input id="object-hardness" type="number" min="0" placeholder="preset"></label><button id="object-preview">Preview stats</button><button id="object-spawn">Create object</button></div>
+<pre id="object-preview-state">Stone: hardness 8, 15 HP per inch of thickness.</pre>
+<div class="controls"><label>Object <select id="object-target"></select></label><label>Repair HP <input id="object-repair-amount" type="number" min="0" value="5"></label><button id="object-repair">GM: repair</button></div>
+</details>
+<h2>AI/controller-readable encounter view</h2><pre id="controller-view"></pre>
+</div>
+<div class="card" id="manual-path-panel" hidden>
+<h2>Controller-specified movement path</h2>
+<p class="subtle">Supply every visited square in order. The calculator validates each step, movement costs, barriers, and AoO opportunities; it never picks a tactical route. Incorporeal creatures can traverse thin ordinary walls, not force barriers.</p>
+<div class="controls"><label>Squares (x,y;x,y) <input class="wide" id="manual-move-path" value="1,4;2,4" /></label>
+<label>Action <select id="manual-move-action"><option value="move">Move action</option><option value="double_move">Double move</option><option value="standard">Standard-action move</option><option value="step">Five-foot step</option><option value="gm_free">GM free move</option></select></label>
+<button id="manual-move-run">Execute supplied path</button></div><div class="controls"><label>Terrain X <input type="number" id="gm-tile-x" value="3" min="0" max="9" /></label>
+<label>Y <input type="number" id="gm-tile-y" value="4" min="0" max="7" /></label>
+<label>Type <select id="gm-tile-kind"><option value="wall">Solid wall</option><option value="force_wall">Force barrier</option><option value="open">Open</option><option value="difficult">Difficult</option><option value="hazard">Hazard</option></select></label>
+<button id="gm-tile-run">GM: change map tile</button></div>
+</div>
+<div class="card" id="gm-panel" hidden>
+<h2>Generic GM adjudication</h2>
+<p class="subtle">These commands apply situations the GM interprets. They are deliberately unavailable to ordinary creature controllers and do not spend creature actions.</p>
+<div class="controls">
+<label>Target <select id="gm-target"></select></label>
+<label>Roll type <select id="gm-kind"><option value="damage">Damage</option><option value="healing">Healing</option><option value="plain">Dice only</option></select></label>
+<label>Count <input type="number" id="gm-count" value="1" min="1" max="100"></label>
+<label>Die <select id="gm-sides"><option value="4">d4</option><option value="6" selected>d6</option><option value="8">d8</option><option value="10">d10</option><option value="12">d12</option><option value="20">d20</option><option value="100">d100</option></select></label>
+<label>Flat ± <input type="number" id="gm-bonus" value="0"></label>
+<label>Damage type <select id="gm-damage-type"></select></label>
+<button id="gm-roll" class="gold">Roll / apply</button>
+</div>
+<p class="subtle">Example: 10-foot fall → Damage · 1d6 · bludgeoning. Dice only reports a roll without modifying HP.</p>
+<h2>Temporary or persistent modifiers</h2>
+<div class="controls">
+<label>Statistic <select id="gm-stat"><option value="attack">Attack</option><option value="damage">Damage</option><option value="ac_all">All three AC defenses</option><option value="ac">Normal AC only</option><option value="touchAc">Touch AC only</option><option value="flatFootedAc">Flat-footed AC only</option><option value="saves">All saves</option><option value="fort">Fortitude</option><option value="ref">Reflex</option><option value="will">Will</option><option value="initiative">Initiative</option><option value="str">Strength</option><option value="dex">Dexterity</option><option value="con">Constitution</option><option value="int">Intelligence</option><option value="wis">Wisdom</option><option value="cha">Charisma</option><option value="skill_checks">All skill checks</option><option value="ability_checks">All ability checks</option><option value="skill:Perception">Perception only</option><option value="cmb">CMB</option><option value="cmd">CMD</option></select></label>
+<label>Modifier <input id="gm-value" type="number" value="-2"></label>
+<label>Bonus type <select id="gm-type"><option value="untyped">Untyped</option><option value="circumstance">Circumstance</option><option value="enhancement">Enhancement</option><option value="dodge">Dodge</option><option value="morale">Morale</option><option value="competence">Competence</option><option value="deflection">Deflection</option><option value="resistance">Resistance</option></select></label>
+<label>Rounds (blank = until removed) <input id="gm-rounds" type="number" min="1" placeholder="No limit"></label>
+<button id="gm-modifier">Apply modifier</button>
+</div>
+<div class="controls"><label>Current effect <select id="gm-active-effect"></select></label><button id="gm-remove">Remove effect</button></div>
+<p class="subtle">A modifier to “All three AC defenses” is explicit; penalties to normal AC do not automatically alter touch or flat-footed AC. The GM interprets which statistics an effect actually changes.</p>
+<h2>Free Mode — audited GM adjudication</h2>
+<p class="subtle">These GM-only exceptions reuse the existing status, modifier and damage systems. They require a written reason, appear in the override log and participate in undo. Free movement follows the actual grid path, checks AoOs and hazards, but spends no action or movement budget. Relocation is immediate and does not traverse intervening squares.</p>
+<div class="controls"><label>Reason <input id="gm-override-reason" class="wide" value="Adventure Path environmental exception" /></label>
+<label>Adjudicated HP <input id="gm-health-hp" type="number" value="1"></label><label><input id="gm-health-revive" type="checkbox"> Explicitly restore life</label><label>Operation <select id="gm-override-kind"><option value="move_free">Free movement (click destination)</option><option value="modifier">Apply selected modifier</option><option value="condition">Apply selected condition</option><option value="remove_condition">Remove selected condition</option><option value="damage">Roll selected damage</option><option value="healing">Roll selected healing</option><option value="grant_action">Grant move action</option><option value="relocate">Relocate to coordinates</option><option value="health">Adjudicate HP / restore life</option></select></label>
+<label>Allowance (ft) <input id="gm-override-feet" type="number" value="5" min="5" max="500" step="5"></label>
+<label>X <input id="gm-override-x" type="number" value="2" min="0" max="100"></label>
+<label>Y <input id="gm-override-y" type="number" value="3" min="0" max="100"></label>
+<button id="gm-override-execute">Perform GM adjudication</button></div>
+<pre id="gm-override-history">No GM overrides have been recorded.</pre>
+<h2>Ability damage, drain and restoration</h2>
+<p class="subtle">Uses the selected GM target. Ability damage is cumulative and does not lower the printed score; drain lowers the score itself. Ordinary temporary ability adjustments use the existing modifier control above.</p>
+<div class="controls"><label>Ability <select id="gm-ability"><option value="str">Strength</option><option value="dex">Dexterity</option><option value="con">Constitution</option><option value="int">Intelligence</option><option value="wis">Wisdom</option><option value="cha">Charisma</option></select></label>
+<label>Operation <select id="gm-ability-op"><option value="apply_ability_damage">Deal ability damage</option><option value="heal_ability_damage">Heal ability damage</option><option value="apply_ability_drain">Inflict ability drain</option><option value="restore_ability_drain">Restore ability drain</option></select></label>
+<label>Points <input id="gm-ability-amount" type="number" min="1" max="10000" value="2"></label>
+<button id="gm-ability-apply">Apply to selected creature</button></div>
+<h2>GM defense test (bypasses action cost)</h2>
+<div class="controls"><label>Defense <select id="gm-defense"><option value="ac">Normal AC</option><option value="touchAc">Touch AC</option><option value="flatFootedAc">Flat-footed AC</option></select></label><button id="gm-defense-attack">Active creature attacks selected target</button></div>
+</div>
+
+<div class="card" id="maneuver-panel" hidden>
+<h2>V3.14 — Combat maneuvers, attack replacement & grappling</h2>
+<p class="subtle">The active creature performs maneuvers against the selected opponent; the engine rolls CMB vs CMD. Maneuvers that provoke an AoO pause for the target's decision. Equipment, size and reach are validated. No AI tactics are hardcoded.</p>
+<div class="controls"><label>Opponent <select id="maneuver-target"></select></label>
+<label>Maneuver <select id="maneuver-kind"><option value="trip">Trip</option><option value="disarm">Disarm</option><option value="sunder">Sunder</option><option value="bull_rush">Bull Rush</option><option value="grapple">Grapple</option><option value="drag">Drag (straight pull)</option><option value="reposition">Reposition</option><option value="overrun">Overrun (defender chooses)</option><option value="steal">Steal accessible item</option><option value="dirty_trick:blinded">Dirty Trick (Blinded)</option><option value="dirty_trick:dazzled">Dirty Trick (Dazzled)</option><option value="dirty_trick:deafened">Dirty Trick (Deafened)</option><option value="dirty_trick:entangled">Dirty Trick (Entangled)</option><option value="dirty_trick:shaken">Dirty Trick (Shaken)</option><option value="dirty_trick:sickened">Dirty Trick (Sickened)</option></select></label>
+<label>Item ID (Disarm/Sunder/Steal) <input id="maneuver-item" class="wide" value="club"></label>
+<label>Reposition path (x,y;x,y) <input id="maneuver-path" class="wide" placeholder="5,4;6,4" /></label>
+<button id="maneuver-execute">Perform maneuver (standard)</button></div>
+<div class="controls"><label>Replace next full-attack strike with <select id="replacement-kind"><option value="trip">Trip</option><option value="disarm">Disarm</option><option value="sunder">Sunder</option></select></label><button id="replacement-execute">Replace strike (no extra action)</button></div>
+<div class="controls"><label>Removable Dirty Trick <select id="dirty-trick-effect"></select></label><button id="dirty-trick-remove">Target: spend action to remove</button></div>
+<div class="controls"><label>Grapple operation <select id="grapple-kind"><option value="maintain">Maintain hold</option><option value="escape">Escape</option><option value="reverse">Reverse control</option><option value="release">Release (free)</option></select></label><label>Maintain option <select id="grapple-option"><option value="hold">Hold</option><option value="pin">Pin</option><option value="damage">Damage</option></select></label><button id="grapple-execute">Grapple action</button><button id="maneuver-position">GM test: position active creature adjacent</button></div>
+<p class="subtle">Drag, Reposition and Overrun currently use limited straight-line/grid models, not full charge/ongoing movement integration. Dirty Trick supports move/standard-action removal. Tie-up, additional grapplers, ranged replacement and complex grapples remain unsupported. The original fixtures remain in tests.html.</p>
+<pre id="maneuver-state">Register and spawn an opponent, then inspect CMB/CMD.</pre>
+</div>
+
+<div class="card" id="defense-panel" hidden>
+<h2>V3.16.1 — Defensive equipment, cover and miss chances</h2>
+<p class="subtle">Equipment changes apply against imported AC without double-counting published totals. Cover/visibility are GM-adjudicated attack context; grid corners and environmental lighting are not inferred. Defensive rolls occur before confirmation, damage, precision or riders.</p>
+<div class="controls"><button id="defense-load-example">Load Mithral / Adamantine armor example</button><button id="defense-inspect">Inspect selected creature's defenses</button></div>
+<div class="controls"><label>Item ID <input id="defense-item" class="wide" value="plate"></label><label>State <select id="defense-location"><option value="worn">Worn</option><option value="carried">Carried / removed</option><option value="dropped">Dropped</option></select></label><label><input id="defense-broken" type="checkbox"> Broken</label><button id="defense-equip">GM: apply equipment state</button></div>
+<div class="controls"><label>Cover <select id="defense-cover"><option value="none">None</option><option value="cover">Cover (+4 AC)</option><option value="soft">Soft cover (+4 AC)</option><option value="improved">Improved cover (+8 AC)</option><option value="total">Total cover (blocked)</option></select></label><label>Concealment <select id="defense-concealment"><option value="0">None</option><option value="20">20% concealment / blur</option><option value="50">50% total concealment / displacement</option></select></label><label>Source <select id="defense-source"><option value="visual">Visual</option><option value="blur">Blur</option><option value="displacement">Displacement</option><option value="total">Total concealment</option></select></label><button id="defense-test">GM: active creature attacks selected target</button><button id="defense-apply-profile">Store this defense on the target</button></div>
+<pre id="defense-result">Select the defender using Target in the Damage Packet section, then inspect its armor and visibility.</pre>
+</div>
+<div class="card" id="foundation-panel" hidden>
+<h2>V3.15 — Offensive riders, energy drain and critical hits</h2>
+<p class="subtle">Use “Load example Devil” to replace the editable creature JSON, then register and spawn it normally. Creature types and subtypes supply defenses; published numeric totals are not re-added.</p>
+<div class="controls"><button id="foundation-load-devil">Load fictional Devil definition</button><label>Target <select id="foundation-target"></select></label></div>
+<div class="controls"><label>Damage <input id="foundation-amount" type="number" min="0" value="20" /></label>
+<label>Type <select id="foundation-type"></select></label>
+<label>Cause <select id="foundation-cause"><option value="environment">Environmental / unspecified</option><option value="weapon">Weapon</option><option value="spell">Spell</option></select></label>
+<label><input type="checkbox" id="foundation-magical" /> Magical</label><label><input type="checkbox" id="foundation-ghost" /> Ghost touch</label>
+<button id="foundation-damage">GM: apply classified damage</button></div>
+<div class="controls"><label>Effect tag <select id="foundation-tag"><option>poison</option><option>mind_affecting</option><option>fire</option><option>paralysis</option><option>death</option></select></label>
+<button id="foundation-evaluate">Evaluate inherited immunity</button><label>DC ID <input id="foundation-dc" class="wide" value="infernal_presence" /></label>
+<button id="foundation-calculate">Calculate ability DC</button></div>
+<h3>Multi-component effect packet (editable JSON)</h3><p class="subtle">Each damage portion is resolved independently; weapon DR applies once. Alignment multipliers are explicit, not inferred from Holy or Unholy labels. Target uses the selection above.</p>
+<textarea id="foundation-packet" rows="13">{
+  "cause": "spell",
+  "metadata": {"sourceKind":"spell", "tags":["evil"]},
+  "components": [
+    {"damageType":"fire", "amount":12},
+    {"damageType":"unholy", "amount":12}
+  ]
+}</textarea>
+<div class="controls"><button id="foundation-packet-apply">GM: resolve packet</button><button id="foundation-load-hellfire">Load Hellfire environmental example</button></div>
+<h3>V3.9.1 — Attack kinds, item condition and weapon materials</h3>
+<p class="subtle">Inspect imported attack mechanics without constructing them from their label. Natural bite defaults to bludgeoning + piercing + slashing <em>on one damage roll</em>. Grab is optional on a qualifying hit; Constrict adds separate damage on a successful grapple check. Weapon materials and attack conditions are represented separately. Critical hits, precision damage and fortification now resolve in V3.13.</p>
+<div class="controls"><button id="foundation-load-bite">Load Bite + Grab + Constrict definition</button><button id="foundation-load-critical">Load Critical + Precision example</button><button id="foundation-load-offensive-riders">Load offensive rider examples</button><button id="foundation-load-final-riders">Load Pull / Push / Energy Drain examples</button><button id="foundation-load-weapon-quality">Load material / broken / improvised examples</button><label>Attack index (0-based) <input id="foundation-attack-index" type="number" min="0" max="19" value="0" /></label><button id="foundation-inspect-attack">Inspect creature attack</button></div>
+<div class="controls"><button id="foundation-load-attack-completion">Load ranged / nonlethal / size examples</button>
+ <label>GM damage / healing <input id="completion-amount" type="number" min="0" max="100000" value="5"></label>
+ <button id="completion-nonlethal">Apply nonlethal</button><button id="completion-heal">Heal HP + nonlethal</button><button id="completion-heal-nonlethal">Heal nonlethal only</button></div>
+<pre id="completion-status">Nonlethal is tracked separately from ordinary HP. Attacks 0–2 in the sample cover ranged, scaled dice and nonlethal.</pre>
+<h3>V3.19 — Attack routines and ammunition</h3>
+<p class="subtle">Derived TWF/mixed natural routines are opt-in; printed attack sequences remain authoritative. Reload/draw commands cost the current creature's real actions. Firing or reloading while threatened pauses for AoO decisions before the action completes.</p>
+<div class="controls"><button id="routines-load-melee">Load TWF + natural attack example</button><button id="routines-load-crossbow">Load crossbow + ammunition example</button></div>
+<div class="controls"><label>Creature <select id="routines-actor"></select></label><label>Ammo store <select id="routines-ammo-id"></select></label><label>Rounds to load <input type="number" id="routines-rounds" value="1" min="1" max="100" /></label><button id="routines-reload">Reload (active creature)</button><button id="routines-draw">Draw ammunition (active creature)</button></div>
+<div class="controls"><label>GM set reserve <input type="number" id="routines-set-reserve" value="12" min="0" max="100000"></label><button id="routines-set-ammo">GM: set ammunition reserve</button></div>
+<pre id="routines-state">Select a creature to inspect its computed attack routine and ammunition.</pre>
+
+<pre id="foundation-attack-detail">Register an example creature and select it as Target above, then inspect attack index 0.</pre>
+<pre id="foundation-result">Choose a command to inspect the adjudication result.</pre>
+<p class="subtle">Current trait coverage is deliberately selective. Unsupported subtype and complex exceptional rules are not silently executed.</p>
+</div>
+<div class="card" id="condition-ailment-panel" hidden>
+<h2>HP and recovery</h2>
+<p class="subtle">Negative HP, stabilization and death are tracked automatically. Configure published recovery rates here. Healing and damage use the existing calculator controls. Rest qualification and exceptional recovery remain GM decisions.</p>
+<div class="controls"><label>Creature <select id="health-target"></select></label><button id="health-stabilize">GM: stabilize with aid</button><label><input id="health-continuous" type="checkbox"> Continuous damage outside tracked ailments</label><button id="health-continuous-set">Apply continuous-damage flag</button></div>
+<details id="recovery-controls"><summary>Fast healing and regeneration</summary>
+<div class="controls"><label>Fast healing <input id="health-fast" type="number" min="0" value="0"></label><label>Regeneration <input id="health-regen" type="number" min="0" value="0"></label><label>Shutdown tags (comma separated) <input id="health-bypass" class="wide" value="acid,fire"></label><label>HP excluded from recovery <input id="health-excluded" type="number" min="0" value="0"></label><label><input id="health-disabled" type="checkbox"> Recovery disabled</label><button id="health-configure">Apply recovery profile</button><button id="health-load">Load current profile</button></div>
+<div class="controls"><label>Suppression rounds <input id="health-suppression-rounds" type="number" min="1" value="1"></label><button id="health-suppress">GM: suppress regeneration</button></div>
+</details>
+<pre id="health-state"></pre>
+<h2>PF1e standard conditions</h2>
+<p class="subtle">34 built-in definitions. Each declares supported numeric mechanics and known exceptions; partial or advisory entries do not claim full automation.</p>
+<div class="controls"><label>Condition <select id="condition-id"></select></label><label>Target <select id="condition-target"></select></label><label>Source <select id="condition-source"><option value="">None</option></select></label><label>Rounds (empty = until removed) <input id="condition-rounds" type="number" min="1" placeholder="Until removed" /></label>
+<button id="condition-apply">Apply / refresh</button><button id="condition-remove">Remove</button></div>
+<p class="subtle" id="condition-help">Select a condition to see its coverage and advisory notes.</p>
+<h2>Generic ailments: poison, disease &amp; DOT</h2>
+<p class="subtle">Import a reusable definition, choose an exposed creature, then apply it. Periodic saves and damage resolve at scheduled intervals. Source and rider delivery are intentionally manual at this stage.</p>
+<label for="ailment-json">Ailment definition (editable JSON)</label><textarea id="ailment-json" rows="14"></textarea>
+<div class="controls"><button id="ailment-register">Register ailment</button><label>Target <select id="ailment-target"></select></label><button id="ailment-expose">Expose target</button></div>
+<div class="controls"><label>Active ailment <select id="ailment-active"></select></label><button id="ailment-cure">Cure / remove</button></div>
+<h2>Time &amp; Events — Initiative, Game Clock and Fast Forward</h2>
+<p class="subtle">The GM establishes what the characters do; only elapsed time and registered mechanical deadlines are resolved here. Configured fast healing, regeneration and recovery checks follow the clock; qualifying rest is decided by the GM.</p>
+<h3>Initiative and turn order</h3>
+<p class="subtle">Preferably establish initiative before activation; the GM may also start it after importing participants. No artificial 99/−20 limits; empty initiative counts are skipped. The GM may edit results or set a creature immediately after another without granting extra actions. Delay is an intentional turn choice; queue its resumption before ending another turn.</p>
+<div class="controls"><button id="initiative-roll">GM: roll initiative</button><button id="initiative-end">GM: end encounter</button><label>Manual results (JSON, optional) <input id="initiative-results" value='{"hero":15}' size="26" /></label><button id="initiative-begin">GM: use supplied results</button></div>
+<div class="controls"><label>Combatant <select id="initiative-actor"></select></label><label>Initiative result <input id="initiative-score" type="number" value="10" /></label><button id="initiative-set">GM: edit initiative</button><label>Immediately after <select id="initiative-after"></select></label><button id="initiative-position">GM: reorder</button></div>
+<div class="controls"><button id="initiative-delay">Delay current turn</button><label>Resume delaying <select id="initiative-delayed"></select></label><button id="initiative-resume">GM: resume after current turn</button></div>
+<div class="controls"><label>Deadline ID <input id="initiative-event-id" value="spell_expiry" /></label><label>Label <input id="initiative-event-label" value="Spell duration expires" /></label><label>After rounds <input id="initiative-event-rounds" type="number" value="1" min="1" /></label><label>At count <input id="initiative-event-score" type="number" placeholder="current count" /></label><label>Expire effect ID (optional) <input id="initiative-effect-id" placeholder="effect id" /></label><label><input type="checkbox" id="initiative-event-gm"> GM decision</label><button id="initiative-schedule">Schedule initiative deadline</button></div>
+<div class="controls"><label>Event ID to cancel <input id="initiative-cancel-id" placeholder="event id" /></label><button id="initiative-cancel">GM: cancel deadline</button><label>Decision <input id="initiative-reason" placeholder="GM adjudication" /></label><button id="initiative-ack">Acknowledge pending deadline</button></div>
+<pre id="initiative-details">Initiative is not active; the historical turn order remains in use.</pre>
+<h3>Immediate actions and ability cooldowns</h3>
+<p class="subtle">Immediate actions spend the current or coming swift action. The GM resolves the effect. A named cooldown is a visible reminder; using an ability's cone or damage tools remains a separate GM operation.</p>
+<div class="controls"><label>Creature <select id="basic-actor"></select></label><label>Action / ability <input class="wide" id="basic-label" value="Breath weapon"></label><button id="basic-immediate">Record immediate action</button><label>Recharge rounds <input id="basic-rounds" type="number" min="1" value="3"></label><button id="basic-cooldown">Mark ability unavailable</button></div>
+<pre id="basic-state"></pre>
+<h3>Maintained spell concentration</h3>
+<p class="subtle">Use the spell's declared duration. Concentration replaces fixed effect/area timers; an optional maximum caps the whole lifetime. Maintenance costs a standard action without provoking. Stop before casting another spell. Skipping maintenance ends concentration at turn end; any declared lingering duration remains.</p>
+<div class="controls"><label>Maximum rounds (empty = unlimited) <input id="concentration-max" type="number" min="1" max="100000" placeholder="Unlimited"></label><label>Rounds after concentration <input id="concentration-after" type="number" min="0" max="100000" value="0"></label><button id="concentration-attach">Use concentration duration in spell JSON</button></div>
+<div class="controls"><label>Maintained spell <select id="concentration-active"></select></label><button id="concentration-maintain">Maintain (standard action)</button><button id="concentration-stop">Stop concentrating</button><label>Distraction DC <input id="concentration-dc" type="number" min="0" value="15"></label><label>Reason <input id="concentration-reason" class="wide" value="GM-adjudicated distraction"></label><button id="concentration-check">GM: concentration check</button></div>
+<pre id="concentration-state">No maintained spells.</pre>
+<h3>Pending Events &amp; Readied Actions</h3>
+<p class="subtle">Arbitrary conditions are interpreted by the AI GM. Expiration is automatic: one turn, encounter, elapsed time, initiative count or indefinite. An expired event does not activate unless its countdown is configured to trigger. Readying costs a standard action; executing the declared action remains GM-adjudicated. Active events are also included in Fast Forward warnings.</p>
+<div class="controls"><label>Event ID <input id="pending-id" value="door_watch" /></label><label>Label <input id="pending-label" value="Watch the door" /></label><label>Trigger <input class="wide" id="pending-trigger" value="If the door opens" /></label><label>Action (Ready only) <input class="wide" id="pending-action" value="Attack whoever enters" /></label></div>
+<div class="controls"><label>Kind <select id="pending-kind"><option value="conditional">Conditional</option><option value="ready">Readied action</option></select></label><label>Expires <select id="pending-duration"><option value="indefinite">Indefinite</option><option value="turn_start">At creature's next turn</option><option value="encounter">At encounter end</option><option value="time">Clock countdown</option><option value="initiative">Initiative countdown</option></select></label><label>Creature <select id="pending-actor"></select></label><label>Count <input id="pending-count" type="number" min="1" value="1" /></label><label>Unit <select id="pending-unit"><option value="round">Rounds</option><option value="minute">Minutes</option><option value="hour">Hours</option><option value="day">Days</option></select></label><label>At initiative <input id="pending-score" type="number" placeholder="Current count" /></label></div>
+<div class="controls"><label>On countdown expiry <select id="pending-expiry"><option value="expire">Expire quietly</option><option value="trigger">Activate event</option></select></label><label><input id="pending-gm" type="checkbox" checked /> GM decision on activation</label><button id="pending-register">Register Pending Event</button></div>
+<div class="controls"><label>Active event <select id="pending-active"></select></label><button id="pending-trigger-button">GM: Trigger</button><button id="pending-cancel">GM: Cancel</button><label>Triggered event <select id="pending-triggered"></select></label><label>Resolution <input id="pending-resolution" value="GM adjudicates the outcome" class="wide" /></label><button id="pending-resolve">GM: Resolve</button></div>
+<pre id="pending-details">No Pending Events are registered.</pre>
+<h3>Persistent areas</h3>
+<p class="subtle">Active regions stay at their map locations. Their countdowns use Pending Events. Removing a region clears its inside-only modifiers; damage already dealt and separately timed exposure effects remain.</p>
+<div class="controls"><label>Region <select id="area-active"></select></label><button id="area-remove">GM: remove region</button></div>
+<pre id="area-state">No persistent areas.</pre>
+<h3>Readied counterspells</h3>
+<p class="subtle">Choose the opposing caster and use the spell identity, level and caster level from the spell JSON below. Matching counters require a registered Spellcraft total. The declared spell remains available until the reaction is cast; spell slots are still managed by the GM.</p>
+<div class="controls"><label>Ready ID <input id="counter-id" value="counter_watch" class="wide" /></label><label>Opposing caster <select id="counter-target"></select></label><label>Counter method <select id="counter-method"><option value="same">Matching spell</option><option value="dispel">Dispel magic</option><option value="greater">Greater dispel magic</option></select></label><label>Matching spell range (feet) <input id="counter-range" type="number" value="60" min="0" /></label><button id="counter-ready">Ready counterspell</button></div>
+<div class="controls"><label>Counter opportunity <select id="counter-opportunity"></select></label><label><input id="counter-perceived" type="checkbox" checked /> GM confirms casting perceived</label><label>Other identification DC adjustment <input id="counter-identification" type="number" value="0" /></label><button id="counter-take">GM: attempt counterspell</button><button id="counter-decline">GM: decline this casting</button></div>
+<pre id="counter-details">No readied counterspell opportunity.</pre>
+<h3>World clock and Fast Forward</h3>
+<label><input type="checkbox" id="time-maintain-concentration"> GM confirms casters maintain concentration throughout elapsed time</label>
+<div class="controls"><label>Day <input type="number" id="clock-day" value="1" min="1"></label><label>Hour <input type="number" id="clock-hour" value="0" min="0" max="23"></label><label>Minute <input type="number" id="clock-minute" value="0" min="0" max="59"></label><button id="clock-set">GM: set calendar display</button></div>
+<div class="controls"><label>Advance <input id="time-count" type="number" value="1" min="1"></label><select id="time-unit"><option value="round">Round(s)</option><option value="minute">Minute(s)</option><option value="hour">Hour(s)</option><option value="day">Day(s)</option></select><button id="advance-time">Fast Forward</button><button id="advance-next-event">Advance to next event</button></div>
+<div class="controls"><label>Event ID <input id="time-event-id" placeholder="guard_rotation"></label><label>Event description <input id="time-event-label" placeholder="Guard rotation"></label><label>After <input id="time-event-count" type="number" value="1" min="1"></label><select id="time-event-unit"><option value="round">Round(s)</option><option value="minute">Minute(s)</option><option value="hour" selected>Hour(s)</option><option value="day">Day(s)</option></select><label><input type="checkbox" id="time-event-needs-gm" checked> Requires GM decision</label><button id="time-schedule">Schedule event</button></div>
+<div class="controls"><label>GM event resolution <input id="time-gm-reason" placeholder="Describe the GM's decision"></label><button id="time-acknowledge">Resolve pending time event</button></div>
+<pre id="time-details">In-game time begins on Day 1 at 00:00:00.</pre>
+<div class="controls"><button id="lifecycle-inspect">GM: inspect all timers &amp; unresolved actions</button></div><pre id="lifecycle-details">Inspect current deadlines and suspended operations.</pre>
+<pre id="casting-time-summary">No ongoing casting.</pre>
+<p class="subtle" id="ailment-help">Timing is deterministic and supports round/minute/hour/day intervals. Normal combat turn controls remain separate.</p>
+</div>
+<div class="card" id="magic-panel">
+<h2>Spellcasting &amp; spell area geometry</h2>
+<p class="subtle">Origin coordinates are grid intersections. Cone and line directions select one of eight grid octants. Preview computes cells and creatures; the AI GM chooses origin and spell data. Burst/emanation line of effect stops at solid walls; spreads route around corners. Current geometry is two-dimensional.</p>
+<div class="controls"><label>Shape <select id="magic-shape"><option value="sphere">Sphere / burst</option><option value="cone">Cone</option><option value="line">Line</option></select></label><label>Mode <select id="magic-mode"><option value="burst">Burst</option><option value="emanation">Emanation</option><option value="spread">Spread</option></select></label><label>Origin intersection X <input id="magic-x" type="number" min="0" value="2" /></label><label>Y <input id="magic-y" type="number" min="0" value="4" /></label><label>Direction <select id="magic-direction"><option>E</option><option>NE</option><option>N</option><option>NW</option><option>W</option><option>SW</option><option>S</option><option>SE</option></select></label><label>Size (feet) <input id="magic-size" type="number" min="5" step="5" value="20" /></label><button id="magic-preview">Preview area on grid</button><button id="magic-clear">Clear preview</button></div>
+<pre id="magic-area-result">Preview an area to highlight its grid squares.</pre>
+<h3>Lingering area settings</h3>
+<p class="subtle">Attach these settings to the spell JSON, then cast normally. Trigger choices and frequency come from the spell's rules. Defaults resolve once per recipient per elapsed round. During Fast Forward, turn-start exposure repeats every six seconds for occupants. Inside-only modifiers end on exit; duration modifiers keep their ordinary individual timer.</p>
+<div class="controls"><label>Duration <input id="area-count" type="number" min="1" value="3" /></label><label>Unit <select id="area-unit"><option value="round">Rounds</option><option value="minute">Minutes</option><option value="hour">Hours</option></select></label><label>Affects <select id="area-affects"><option value="all">Everyone</option><option value="enemies">Enemies</option><option value="allies">Allies</option></select></label></div>
+<div class="controls"><label><input id="area-create" type="checkbox" checked /> On creation</label><label><input id="area-enter" type="checkbox" checked /> On entry</label><label><input id="area-turn" type="checkbox" checked /> Each occupant's turn</label><label>Frequency <select id="area-frequency"><option value="once_per_round">Once per recipient per round</option><option value="each_trigger">Every selected trigger</option></select></label><label>Modifier scope <select id="area-effect-scope"><option value="inside">While inside</option><option value="duration">Individual duration</option></select></label></div>
+<div class="controls"><button id="area-attach">Use area and lingering settings in JSON</button><button id="area-detach">Remove lingering settings from JSON</button></div>
+<h3>Daily spell resources</h3>
+<p class="subtle">Imported totals already include bonuses. Derived totals use the explicit daily ability score in the setup below, with a visible base + bonus breakdown. Live ability changes never alter the allotment or replenish slots. Daily refresh and recalculation require explicit GM updates.</p>
+<div class="controls"><label>Caster <select id="slots-actor"></select></label><button id="slots-sample-prepared">Load prepared example</button><button id="slots-sample-spontaneous">Load spontaneous example</button></div>
+<label for="slots-json">Spellcasting setup (editable JSON)</label><textarea id="slots-json" rows="12">{}</textarea>
+<div class="controls"><label>GM reason <input id="slots-reason" class="wide" value="Establish daily spell allotment" /></label><label><input id="slots-replace" type="checkbox" /> Explicitly replace existing allotment</label><button id="slots-preview">Preview pool allotments</button><button id="slots-configure">GM: apply setup</button></div>
+<div class="controls"><label>Book <select id="slots-book"></select></label><label>Known spell <select id="slots-spell"></select></label><label>Prepared copy <select id="slots-preparation"></select></label><label>Pool <select id="slots-pool"></select></label><label>Slot level <input id="slots-level" type="number" min="0" max="9" value="1" /></label><button id="slots-use">Use resource in spell JSON</button></div>
+<div class="controls"><button id="slots-refresh">GM: daily refresh (keep choices)</button><button id="slots-restore">GM: restore selected use</button><label>New preparation ID <input id="slots-prepare-id" class="wide" value="prepared_copy" /></label><button id="slots-prepare">GM: fill an open slot</button></div>
+<pre id="slots-state">No spell resources configured; historical untracked casting remains available until setup.</pre>
+<pre id="slots-result">Resource updates and allotment previews appear here.</pre>
+<h3>GM-defined spell (editable JSON)</h3>
+<div class="controls"><button id="magic-sample-touch">Load touch example</button><button id="magic-sample-ray">Load ray example</button><button id="magic-sample-condition">Load condition example</button></div>
+<p class="subtle">Casting spends the declared action. A full-round action finishes immediately; a 1-round cast finishes just before the caster's next turn. Longer casts require consecutive full-round actions. Damage during casting checks concentration automatically. Choose targets or area when casting finishes. GM resolve is an explicit override.</p>
+<div class="controls"><label>Casting time <select id="magic-casting-time"><option value="standard">Standard action</option><option value="swift">Swift action</option><option value="full_round">Full-round action (immediate)</option><option value="1_round">1 round (until next turn)</option><option value="minute">1 minute</option><option value="hour">1 hour</option></select></label><button id="magic-set-time">Use casting time in JSON</button></div>
+<textarea id="magic-spell-json" rows="13">{
+  "name": "Sample Flame Burst",
+  "level": 3,
+  "casterLevel": 5,
+  "castingTime": "standard",
+  "defensive": false,
+  "area": {"shape":"sphere","mode":"burst","origin":{"x":2,"y":4},"sizeFeet":20},
+  "save": {"type":"ref","dc":16,"onSuccess":"half"},
+  "spellResistance": true,
+  "components": [{"damageType":"fire","dice":{"count":5,"sides":6}}]
+}</textarea>
+<div class="controls"><label>Spell condition <select id="magic-condition"></select></label><label>Duration (rounds) <input id="magic-condition-rounds" type="number" min="1" max="100000" value="3" /></label><label>Additional effect tags (comma-separated) <input id="magic-condition-tags" style="width:240px;max-width:100%" placeholder="mind_affecting, sleep" /></label><label><input id="magic-condition-saved" type="checkbox" /> Also on a successful non-negating save</label><button id="magic-add-condition">Add condition to JSON</button><button id="magic-clear-conditions">Clear conditions from JSON</button></div>
+<p class="subtle">Use the actual spell's conditions, save, tags and duration. Conditions share the spell's ongoing effect duration and dispel group. Repeated copies retain separate sources without doubling the same condition's penalties. Fear/fatigue escalation, waking triggers and other spell-specific exceptions require GM adjudication; partial condition support remains visible in the result.</p>
+<div class="controls"><button id="magic-sync-area">Use preview area in JSON</button><button id="magic-cast">Cast (active creature action)</button><button id="magic-gm-resolve">GM resolve (no action cost)</button></div>
+<div class="controls"><label>Casting AoO <select id="magic-aoo-actor"></select></label><button id="magic-aoo-take">Take AoO</button><button id="magic-aoo-decline">Decline AoO</button><label>External damage only <input id="magic-casting-damage" type="number" min="0" value="0" /></label><button id="magic-continue">GM: confirm AoOs and resume cast</button></div>
+<p class="subtle">Damage resolved here is already checked. External damage is only for attacks adjudicated outside the tool; resolve those separately when multiple hits occur.</p>
+<div class="controls"><label>Ongoing casting <select id="magic-ongoing"></select></label><button id="magic-long-continue">Continue (full-round action)</button><button id="magic-complete">Complete using JSON targets / area</button><button id="magic-cancel">Stop casting</button></div>
+<pre id="magic-casting-state">No ongoing casting.</pre>
+<h3>Held touch spells</h3>
+<p class="subtle">Cast first, then move or deliver a touch. The first touch attempt is free during that casting turn; a miss retains the charge. Later attempts use a standard action. A new casting dissipates the held spell. Rays resolve with their casting and provoke separately for firing.</p>
+<div class="controls"><label>Held spell <select id="magic-held"></select></label><label>Touch target <select id="magic-touch-target"></select></label><label><input type="checkbox" id="magic-touch-willing"> GM confirms willing</label><button id="magic-touch-deliver">Deliver touch</button></div>
+<div class="controls"><label>Other contact <input id="magic-contact-reason" placeholder="Describe unintended contact"></label><button id="magic-contact-creature">GM: resolve creature contact</button><button id="magic-contact-object">GM: discharge on object</button></div>
+<pre id="magic-held-state">No held touch spell.</pre>
+<h3>Dispel ongoing spells</h3>
+<p class="subtle">Choose a creature or one specific effect. The dispel example uses the caster level from the current JSON; then use Cast to pay its normal action. A dispel ends that recipient's linked modifiers, conditions and deadlines. Instantaneous damage and healing have already happened.</p>
+<div class="controls"><label>Dispel target <select id="magic-dispel-target"></select></label><label>Effect <select id="magic-dispel-effect"><option value="">One spell, highest caster level first</option></select></label><label><input id="magic-dispel-greater" type="checkbox" /> Greater targeted dispel</label><button id="magic-sample-dispel">Load dispel for selected target</button></div>
+<pre id="magic-effect-state">No tracked ongoing spell effects.</pre>
+<pre id="magic-spell-result">Spell results, saves, SR, and pending casting decisions appear here.</pre>
+</div>
+<div class="card"><h2>Battlefield (5-foot squares)</h2><div class="controls"><strong>Active creature tools:</strong><button data-mode="move" class="on">Move (move action)</button><button data-mode="move_standard">Move (standard action)</button><button data-mode="double_move">Double move (two moves)</button><button data-mode="charge">Charge (full-round)</button><button data-mode="crawl">Crawl (move action)</button><button id="combat-stand">Stand up (move action)</button><button id="combat-total-defense">Total defense (standard)</button><button data-mode="step">5-foot step (free)</button><button data-mode="attack">Attack (costs standard)</button><label><input type="checkbox" id="combat-precision-eligible"> Force precision eligibility (unchecked: automatic)</label><label>Attack index <input id="combat-attack-index" type="number" min="0" max="19" value="0" /></label><button data-mode="full_attack">Full attack (full-round)</button><button id="finish-full" hidden>Finish full attack (forgo remaining)</button></div><div id="interrupt-box" role="alert" hidden><strong>ATTACK OF OPPORTUNITY — ACTION PAUSED</strong><p class="warning" id="interrupt-label"></p><div class="controls"><button id="accept">Take opportunity</button><button id="decline">Decline</button><button id="appendage" hidden>Grab (appendage-only −20 CMB)</button></div></div><details><summary>Combat options and verified feat setup</summary>
+<label>Options for the next attack/full attack (JSON; reset to {} when finished)<input id="combat-options" class="wide" value='{}'></label>
+<p class="subtle">Example: {"powerAttack":true}. Other keys: deadlyAim, piranhaStrike, combatExpertise, fightingDefensively, rapidShot, vitalStrike (1–3). Active modes persist until the next turn. Feats require explicit setup and unmodified imported totals.</p>
+<textarea id="combat-profile" spellcheck="false">{"feats":[],"acrobaticsRanks":0,"totalsExcludeCombatOptions":true}</textarea>
+<div class="controls"><button id="combat-configure">Set active creature combat profile (GM)</button><button id="combat-inspect">Inspect combat modes and immunities</button></div><pre id="combat-state"></pre></details><div id="board" class="board"></div><p id="board-label">After starting the encounter, click to move the active creature. End turn to switch between Explorer and the monster.</p></div>
+<div class="card"><h2>Test actions — gameplay versus GM overrides</h2><div class="controls" id="test-buttons"></div><p class="subtle">Grid controls work for both Explorer and monsters. Full attack resolves one strike per click; a five-foot step is available between strikes. The Choker convenience movement spends real actions. Pudding direct-damage buttons are GM event injections.</p><div class="controls"><button id="end-turn">End turn</button><button id="undo-turn">Undo turn</button><button id="undo-round">Undo round</button></div>
+
+</div>
+</section>
+<aside class="pane">
+<div class="card"><h2>Current game state</h2><div id="stats" class="stats"></div><p class="subtle" id="clock"></p></div>
+<div class="card"><h2>Automatic event log</h2><div id="log" class="log"></div></div>
+<div class="card"><h2>Last instruction</h2><pre id="command"></pre><h2>Installed rule data</h2><pre id="rules"></pre></div>
+</aside>
+</main><footer>V3.47 remains an experimental calculator, not a rules-complete Pathfinder 1e or AI GM implementation. Swift is tracked; arbitrary trigger interpretation and complex nested interrupts remain GM adjudications. Grab and Constrict are supported. Legacy fixtures use simplified statistics. Imported abilities are limited to the supported declarative vocabulary. The 50 × 40 ft demonstration board is too small to represent Vienna's full 360-foot aura. For that fixture, the exact 360-foot radius and 1d20 × 10-foot travel distance are applied in grid units, with relocation to the nearest legal map square.</footer>
+<script>
+/*__STATS__*/
+/*__LIFECYCLE__*/
+/*__CORE__*/
+/*__AUTOMATION__*/
+/*__CRITICAL_RULES__*/
+/*__TRAITS__*/
+/*__WEAPON_MATERIALS__*/
+/*__ATTACK_COMPLETION_RULES__*/
+/*__ATTACK_ROUTINE_RULES__*/
+/*__ATTACK_LIBRARY__*/
+/*__REGISTRY__*/
+/*__CONDITIONS__*/
+/*__AILMENTS__*/
+/*__CONDITION_ENGINE__*/
+/*__FOUNDATIONS__*/
+/*__MANEUVERS__*/
+/*__RIDERS__*/
+/*__CRITICAL__*/
+/*__FINAL_OFFENSE__*/
+/*__MAP_GEOMETRY__*/
+/*__DEFENSE__*/
+/*__TIME_ENGINE__*/
+/*__ATTACK_COMPLETION__*/
+/*__ATTACK_ROUTINES__*/
+/*__INITIATIVE__*/
+/*__PENDING_EVENTS__*/
+/*__SPELL_RESOURCES__*/
+/*__SUMMONS__*/
+/*__SPELL_GEOMETRY__*/
+/*__PERSISTENT_AREAS__*/
+/*__OBJECT_RULES__*/
+/*__ENCOUNTER_BASICS__*/
+/*__FALLING_RULES__*/
+/*__MAP_ARTWORK__*/
+/*__PLAYER_VIEW__*/
+/*__MAP_SNAPSHOTS__*/
+/*__SCENE__*/
+/*__COMBAT_MECHANICS__*/
+/*__COLLECTIVES__*/
+/*__MAGIC__*/
+/*__SCENARIOS__*/
+/*__UI__*/
+</script></body></html>

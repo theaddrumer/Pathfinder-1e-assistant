@@ -1,0 +1,13 @@
+PATHFINDER ASSISTANT — GITHUB TEST DOWNLOAD
+
+Read SETUP.md first. This ZIP includes the calculator and its JavaScript dependencies.
+You need your own permitted ChatGPT custom connection, tunnel and secret key.
+
+Extract the entire ZIP, then run in Ubuntu:
+    bash "/mnt/c/Users/YOUR_WINDOWS_NAME/Downloads/pathfinder-ubuntu/launcher/install-ubuntu.sh"
+Use your actual extraction path. Run without sudo; the installer requests it if needed.
+It installs the local launcher and creates shortcuts. Follow SETUP.md for credentials,
+your first empty encounter, and an actual ChatGPT kernel_status verification.
+
+For updates, stop the existing launcher and keep/back up your encounter save.
+Never put API secrets, saves, private maps or account settings in a GitHub issue.
