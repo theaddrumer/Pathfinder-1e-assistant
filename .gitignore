@@ -1,0 +1,38 @@
+# Installed dependencies and generated packages
+node_modules/
+dist/
+release-assets/
+*.zip
+*.tar.gz
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
+
+# Local account configuration, logs, and credentials
+.env
+.env.*
+!.env.example
+settings.json
+mcp.local.json
+http-plugin/
+*.log
+*.pem
+*.key
+*.pfx
+*.p12
+.config/
+
+# Personal game state and imported assets (keep outside the checkout)
+encounter.json
+encounter.json.*
+*.lock
+saves/
+sessions/
+campaigns/
+private/
+map-imports/
+user-data/
+TEST_RESULTS_CURRENT.txt
+
+# Do not blanket-ignore PNG files: the public icon is tracked.
